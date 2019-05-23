@@ -2,9 +2,25 @@
 
 
 
-Golang 瑞士军刀 1.0 正式版
+Golang 瑞士军刀 1.1 正式版
 
 数据模块都经过三年的数十个跨平台应用场景的测试
+
+模块支持 Windows，Linux ，UNIX  三平台无缝编译，真正实现，一平台开发三平台编译。
+
+最小化加载 
+
+MySQL 
+SQLite
+颜色代码库
+
+go get github.com/fatih/color 
+go get github.com/mattn/go-sqlite3
+go get github.com/go-sql-driver/mysql
+
+
+加载模块：
+go get github.com/e9571/lib1
 
 
 
