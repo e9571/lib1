@@ -27,7 +27,9 @@ File 模块，用于文件判定，读取，写入，写入模式支持换行符
 瑞士军刀 Windows，Linux ，UNIX  支持三平台无缝编译链接，快速实现，一平台开发三平台编译。
 
 
-最小化加载 
+
+基础模块最小化加载：
+
 
 MySQL 
 SQLite
@@ -38,7 +40,8 @@ go get github.com/mattn/go-sqlite3
 go get github.com/go-sql-driver/mysql
 
 
-加载模块：
+加载主模块：
+
 go get github.com/e9571/lib1
 
 
