@@ -1,0 +1,85 @@
+
+
+
+
+Golang 瑞士军刀 1.0 正式版
+
+数据模块都经过三年的数十个跨平台应用场景的测试
+
+
+
+common_function.go
+
+包含 正则表达式提取，数值转换，HTTP 快速访问等模块
+
+file_operate.go
+
+包含文件操作等模块
+
+log_operate.go
+
+包含日志操作等模块
+
+mysql_lib.go
+
+包含 MySQL 操作等模块
+
+sqlite_lib.go 
+
+包含 SQLite 操作等模块
+
+TimeNumber.go
+
+包含时间信息操作等模块
+
+
+经典应用参考
+
+	//mysql 应用
+	
+	mysql_lib.go 文件头中有应用参考
+
+	mysql_config := database_str("test")
+	table_name := "table1"
+
+	sql_str_value := make(map[string]string)
+
+	sql_str_value["data1"] = "3"
+	sql_str_value["data3"] = "data4"
+
+	//插入数据 
+	//常规插入
+	//sql_str := lib1.assemble_insert(sql_str_value, table_name)
+	//防止重复插入
+	//sql_str := lib1.assemble_insert_exists(sql_str_value, sql_str_value1, table_name)
+	//fmt.println(sql_str)
+	//fmt.println(lib1.mysql_connect_query_insert_api(sql_str, mysql_config))
+	
+	//删除数据
+	//sql_str := "  delete from `" + table_name + "` where `id` = '2'"
+	//fmt.println(lib1.mysql_connect_query_update_api(sql_str, mysql_config))
+	
+	
+	//数据直接查询遍历
+	
+	sql_str:="SELECT * FROM ec_address_log WHERE TYPE='btc' AND ISNULL(update_time)"
+
+	result:=lib1.Mysql_connect_query_config_api(sql_str,database)
+
+	base_id:=""
+	address:=""
+
+	count:=0
+
+	//更新所有数据时间
+	for _, value := range result {
+
+		base_id = value["id"]
+		address=value["address"]
+		
+		}
+
+
+
+
+2019年5月23日13:30:38

@@ -1,31 +1,23 @@
 package lib1
 
 import (
+
 	"fmt"
 	"strconv"
 	"time"
 )
 
-/*
+//版本 1.1
 
+//修复 时间->时间戳 误差问题 使用高精度 时区模式
 
-by 9571 china  xi'an
-
-95714623@qq.com
-
-2018年2月28日16:40:59
-
-*/
-
+//2019年4月7日13:12:03
 
 //Go 语言时间专用格式化 函数 返回 常规时间 返回文件名时间 返回 unix 时间
-
-//可选参数
 //time
 //flie_time
 //unix
 //lib1.Create_Format_time("time")
-
 func Create_Format_time(type_str string) string {
 
 	tNow := time.Now()
@@ -36,6 +28,7 @@ func Create_Format_time(type_str string) string {
 	switch type_str {
 	case "time":
 		//只能是 2006-01-02 15:04:05 根据官方文档
+		// http://blog.csdn.net/juxuny/article/details/43409983
 		str_time = time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
 	case "flie_time":
 		str_time = time.Unix(timestamp, 0).Format("2006_01_02_15_04_05")
@@ -51,10 +44,11 @@ func Create_Format_time(type_str string) string {
 //Go 语言 专用格式化 指定时间格式 转为  unix 时间
 func Get_appoint_number(time_str string) string {
 
-	tNow, _ := time.Parse("2006-01-02 15:04:05", time_str)
-	timestamp := tNow.Unix()
+	loc, _ := time.LoadLocation("Asia/Shanghai")        //设置时区
+	tt, _ := time.ParseInLocation("2006-01-02 15:04:05", time_str, loc)
 
-	return fmt.Sprintf("%d", timestamp)
+	return fmt.Sprintf("%d", tt.Unix())
+	
 }
 
 //把 unix 时间按转为 指定时间
@@ -73,10 +67,12 @@ func Convert_appoint_number(unix_str string) string {
 //MINUTE
 //HOUR
 //DAY 最多只到天，因为跨月的话 ，会涉及到的月度日期的不一致问题
-
 func TIMESTAMPDIFF(datetime_expr_start int64, datetime_expr_complete int64, type_str string) int {
 
 	//进行数据转换
+	//v1, err := strconv.ParseFloat(datetime_expr1, 64)
+	//v2, err := strconv.ParseFloat(datetime_expr2, 64)
+	//value := math.Abs(v1 - v2)
 	value := datetime_expr_start - datetime_expr_complete
 
 	//进行数据转换 如果需要整除
@@ -87,7 +83,9 @@ func TIMESTAMPDIFF(datetime_expr_start int64, datetime_expr_complete int64, type
 
 	switch type_str {
 	case "SECOND":
+		//string := strconv.FormatInt(int64, value_tmp)
 		value_tmp := strconv.FormatInt(value, 16)
+		//value, _ = strconv.Atoi(value_tmp)
 		value_return, _ = strconv.Atoi(value_tmp)
 		return value_return
 	case "MINUTE":
