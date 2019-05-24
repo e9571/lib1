@@ -25,7 +25,7 @@ import (
 // 2  新增多项应用函数
 // 3  跨平台
 
-//2019年1月22日10:35:46
+//2018年1月22日10:35:46
 
 //函数列表
 
@@ -327,7 +327,7 @@ func Get_data_preg_address(parameter string) string {
 
 //适用于 特殊字符中无法使用正则表达式定位的时候
 
-//使用方法  使用前  需要先确认过获取到的源码中有目标字符串 2018年5月7日09:25:53
+//使用方法  使用前  需要先确认过获取到的源码中有目标字符串（原始源码检查） 2018年5月7日09:25:53
 
 //获取指定偏移后的指定长度字符串
 //regexp_str = `Confirmations[.\s\S]*?</dd>` //整体区域
@@ -448,8 +448,8 @@ const (
 //生成 CRC
 //crc_tmp :=[3]string{"", "", ""}
 //生成 CRC
-//crc_tmp[0]=sql_str_value["stock_id"]
-//crc_tmp[1]=sql_str_value["type_name"] //使用板块名称
+//crc_tmp[0]=sql_str_value["btc"]
+//crc_tmp[1]=sql_str_value["type_name"] //
 //crc_tmp[2]=date_str
 func Create_CRC(data_source [3]string) string {
 

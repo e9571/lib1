@@ -136,7 +136,6 @@ func ReadAll_Byte(filePth string) ([]byte, error) {
 
 
 //专业文件读写操作
-//https://segmentfault.com/a/1190000013171060
 
 /**
  * 判断文件是否存在  存在返回 true 不存在返回false

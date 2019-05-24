@@ -89,7 +89,7 @@ func SQLite_connect_query_config_api(sql_str string, dbPath string) (map[int]map
 
 	//fmt.Println(result)
 
-	// 关闭 连接
+	// 延迟关闭 连接
 	//defer db.Close()
 	db.Close()
 
@@ -99,6 +99,7 @@ func SQLite_connect_query_config_api(sql_str string, dbPath string) (map[int]map
 //无返回查询 插入
 func SQLite_connect_query_insert_api(sql_str string, dbPath string) (int64,error) {
 
+	//修复 SQLite 官方 BUG ，在查询文件的时候先检查文件是否存在
 	if CheckFileIsExist(dbPath)==false{
 		return -1,SprintfErrWrite("File not find......")
 	}

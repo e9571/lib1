@@ -27,7 +27,7 @@ func Database_str(name string) string {
 
 
 //2 SQL连接输出模块 动态泛型
-// 2018年10月3日10:27:01
+// 2017年10月3日10:27:01
 // 修改细节 即使返回 捕获所有异常
 func Mysql_connect_query_config_api(sql_str string, database_config string) (map[int]map[string]string,error) {
 
@@ -109,7 +109,7 @@ func Mysql_connect_query_config_api(sql_str string, database_config string) (map
 
 //原版模式 获得插入返回ID
 
-// 2018年10月3日10:27:01
+// 2017年10月3日10:27:01
 // 修改细节 即使返回 捕获所有异常
 func Mysql_connect_query_insert_api(sql_str string, database_config string) (int64,error) {
 
@@ -160,7 +160,7 @@ func Mysql_connect_query_insert_api(sql_str string, database_config string) (int
 
 //新版模式 不需要返回ID 只要不报错就可以
 
-// 2018年10月3日10:27:01
+// 2017年10月3日10:27:01
 // 修改细节 即使返回 捕获所有异常 返回成功 失败
 func Mysql_connect_query_insert_api_3(sql_str string, database_config string)  bool{
 
@@ -191,7 +191,7 @@ func Mysql_connect_query_insert_api_3(sql_str string, database_config string)  b
 
 //无返回查询 更新
 
-// 2018年10月3日10:27:01
+// 2017年10月3日10:27:01
 // 修改细节 即使返回 捕获所有异常 获得影响行数
 func Mysql_connect_query_update_api(sql_str string, database_config string) (int64,error) {
 
@@ -445,7 +445,6 @@ func Table_field_map(sql_str string,table_str string,database_name string)map[st
 	//get data
 	for _, value := range result {
 		//fmt.Printf("%s->%s", key, value["id"])
-		//again get
 		for key1, value1 := range value {
 			//fmt.Printf("%s-->%s \n", key1, value1)
 			data_source[key1] = value1

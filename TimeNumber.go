@@ -11,7 +11,7 @@ import (
 
 //修复 时间->时间戳 误差问题 使用高精度 时区模式
 
-//2019年4月7日13:12:03
+//2016年4月7日13:12:03
 
 //Go 语言时间专用格式化 函数 返回 常规时间 返回文件名时间 返回 unix 时间
 //time
@@ -28,7 +28,6 @@ func Create_Format_time(type_str string) string {
 	switch type_str {
 	case "time":
 		//只能是 2006-01-02 15:04:05 根据官方文档
-		// http://blog.csdn.net/juxuny/article/details/43409983
 		str_time = time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
 	case "flie_time":
 		str_time = time.Unix(timestamp, 0).Format("2006_01_02_15_04_05")
