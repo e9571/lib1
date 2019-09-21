@@ -1,12 +1,10 @@
 package lib1
 
-
 import (
     "encoding/json"
     "strconv"
     "strings"
 )
-
 
 //Json to Map and Map to Json 通用转换库
 
@@ -87,7 +85,7 @@ func Str_interface_to_json(source string) map[string]string{
     source = strings.Replace(source, "{", "", -1)
    source = strings.Replace(source, "}", "", -1)
 
-   list_str:=lib1.Word_Split(source,",")
+   list_str:=Word_Split(source,",")
 
 
    result :=make(map[string]string)
@@ -97,7 +95,7 @@ var listStrTmp []string
 //数据二次分析
 for i:=0;i<len(list_str) ;i++  {
 
-      listStrTmp =lib1.Word_Split(list_str[i],":")
+      listStrTmp =Word_Split(list_str[i],":")
 
 if  len(listStrTmp)==2{
          result[listStrTmp[0]]= listStrTmp[1]

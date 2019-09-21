@@ -123,13 +123,16 @@ func Get_HTTP(url_str string) (string,error) {
 	resp, err := c.Get(url_str)
 
 	//对数据进行延迟关闭
-	defer resp.Body.Close()
+	//defer resp.Body.Close()
 
 	if err!=nil {
 		return "",err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
+
+	//续航补丁 2019年9月20日19:53:05
+	resp.Body.Close()
 
 	if err != nil {
 		return "",err
