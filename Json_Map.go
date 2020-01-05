@@ -6,7 +6,7 @@ import (
     "strings"
 )
 
-//Json to Map and Map to Json 通用转换库
+//Json to Map and Map to Json 通用转换库 Update 版本
 
 //将 Map 转换成 JSON
 func Map_to_json(m map[string]interface{}) string {
