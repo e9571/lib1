@@ -3,16 +3,20 @@ package lib1
 import (
 
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
 
 //版本 1.1
 
+//<<<<<<< Updated upstream
 //修复 时间->时间戳 误差问题 使用高精度 时区模式
 
 //2016年4月7日13:12:03
 
+//=======
+//>>>>>>> Stashed changes
 //Go 语言时间专用格式化 函数 返回 常规时间 返回文件名时间 返回 unix 时间
 //time
 //flie_time
@@ -43,6 +47,7 @@ func Create_Format_time(type_str string) string {
 //Go 语言 专用格式化 指定时间格式 转为  unix 时间
 func Get_appoint_number(time_str string) string {
 
+	os.Setenv("ZONEINFO", "conf/data.zip")
 	loc, _ := time.LoadLocation("Asia/Shanghai")        //设置时区
 	tt, _ := time.ParseInLocation("2006-01-02 15:04:05", time_str, loc)
 

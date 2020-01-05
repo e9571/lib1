@@ -264,5 +264,37 @@ func WriteMaptoFile(m map[string]string, filePath string) error {
 	return w.Flush()
 }
 
+//2020年1月5日10:00:59
+//新建文件 自动判断文件夹是否存在
+func Create_New_File(fileName string) (string,error) {
+
+	//根据时间线 生成日志
+	//fileName :=static_path+ "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
+
+	//如果未定义路径
+	/*
+	if len(static_path)==0{
+		fileName = "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
+	}
+	 */
+
+	//检查文件是否存在
+	if Exists(fileName)==true{
+		return  fileName,nil
+	}
+
+	logFile, err := os.Create(fileName)
+
+	if err != nil {
+		//fmt.Println(err)
+		return "",err
+	}
+
+	logFile.Close()
+
+	return fileName,nil
+}
+
+
 
 

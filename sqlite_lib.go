@@ -1,4 +1,3 @@
-// mysql_lib
 package lib1
 
 import (

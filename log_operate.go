@@ -1,4 +1,3 @@
-// mysql_lib
 package lib1
 
 import (
@@ -84,6 +83,8 @@ func Create_log_add(data_write string,file_name string) {
 
 	logger.Println(data_write)
 
+	logfile.Close()
+
 }
 
 
@@ -98,7 +99,7 @@ func Create_log_add(data_write string,file_name string) {
 //log_flie=lib1.Create_new_log("","log")
 
 //获得最新日志 如果模块需要 返回文件名 使用静态路径
-func Create_new_log(static_path string,type_str string) string {
+func Create_new_log(static_path string,type_str string) (string,error) {
 
 	//根据时间线 生成日志
 	fileName :=static_path+ "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
@@ -108,19 +109,10 @@ func Create_new_log(static_path string,type_str string) string {
 		fileName = "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
 	}
 
-
 	//检查文件是否存在
-	if Exists(fileName)==true{
-		return  fileName
-	}
+	fileName,err:=Create_New_File(fileName)
 
-	logFile, err := os.Create(fileName)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer logFile.Close()
-
-	return fileName
+	return fileName,err
 }
 
 //如果使用静态文件位置 2018年7月12日14:20:20
@@ -140,6 +132,8 @@ func Create_log_add_static(static_path string,data_write string,file_name string
 
 	logger := log.New(logfile, "", log.Ldate|log.Ltime|log.Llongfile)
 	logger.Println(data_write)
+
+	logfile.Close()
 }
 
 // 判断所给路径文件/文件夹是否存在
