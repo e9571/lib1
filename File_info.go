@@ -127,19 +127,19 @@ func Create_File_info(path string) (map[string]string,error){
 		//创建时间
 		nanoseconds := fileSys.CreationTime.Nanoseconds() // 返回的是纳秒
 		file_info["create_core_time"]=strconv.FormatInt(nanoseconds,10)
-		file_info["create_time"]=lib1.Convert_appoint_number(file_info["create_core_time"][0:10])
+		file_info["create_time"]=Convert_appoint_number(File_info_list["create_core_time"][0:10])
 
 		//写入时间
 		fileSys = fileInfo.Sys().(*syscall.Win32FileAttributeData)
 		nanoseconds = fileSys.LastWriteTime.Nanoseconds() // 返回的是纳秒
 		file_info["write_core_time"]=strconv.FormatInt(nanoseconds,10)
-		file_info["write_time"]=lib1.Convert_appoint_number(file_info["write_core_time"][0:10])
+		file_info["write_time"]=Convert_appoint_number(File_info_list["write_core_time"][0:10])
 
 		//访问时间
 		fileSys = fileInfo.Sys().(*syscall.Win32FileAttributeData)
 		nanoseconds = fileSys.LastAccessTime.Nanoseconds() // 返回的是纳秒
 		file_info["read_core_time"]=strconv.FormatInt(nanoseconds,10)
-		file_info["write_time"]=lib1.Convert_appoint_number(file_info["read_core_time"][0:10])
+		file_info["write_time"]=Convert_appoint_number(File_info_list["read_core_time"][0:10])
 
 		//文件访问权限
 		file_info["mode"]=fmt.Sprintf("%d",fileInfo.Mode())
