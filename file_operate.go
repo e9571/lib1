@@ -283,14 +283,7 @@ func Create_New_File(fileName string) (string,error) {
 		return  fileName,nil
 	}
 
-	logFile, err := os.Create(fileName)
-
-	if err != nil {
-		//fmt.Println(err)
-		return "",err
-	}
-
-	logFile.Close()
+	os.Mkdir(fileName, os.ModePerm)
 
 	return fileName,nil
 }
