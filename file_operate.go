@@ -282,8 +282,14 @@ func Create_New_File(fileName string) (string,error) {
 	if Exists(fileName)==true{
 		return  fileName,nil
 	}
-
+       
+	
 	os.Mkdir(fileName, os.ModePerm)
+
+<<<<<<< HEAD
+	os.Mkdir(fileName, os.ModePerm)
+=======
+>>>>>>> c1591de2fdf83ded971b5c103f7ab31acb9188c8
 
 	return fileName,nil
 }
