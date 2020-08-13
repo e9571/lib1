@@ -229,6 +229,23 @@ func Write_file(str string,path string) (error)  {
 
 }
 
+//文件写入 覆盖模式
+//https://www.cnblogs.com/kumata/p/10161754.html
+func WriteToFile(fileName string, content string) error {
+   f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
+   if err != nil {
+      fmt.Println("file create failed. err: " + err.Error())
+   } else {
+      // offset
+      //os.Truncate(filename, 0) //clear
+      n, _ := f.Seek(0, os.SEEK_END)
+      _, err = f.WriteAt([]byte(content), n)
+      //fmt.Println("write succeed!")
+      defer f.Close()
+   }
+return err
+}
+
 //数据写入 精确行 支持换行符
 func WriteListtoFile(List []string, filePath string) error {
 
@@ -285,14 +302,18 @@ func Create_New_File(fileName string) (string,error) {
        
 	
 	os.Mkdir(fileName, os.ModePerm)
-
+/*
 <<<<<<< HEAD
 	os.Mkdir(fileName, os.ModePerm)
 =======
 >>>>>>> c1591de2fdf83ded971b5c103f7ab31acb9188c8
 
+ */
+
 	return fileName,nil
 }
+
+
 
 
 
