@@ -314,7 +314,12 @@ func Create_New_File(fileName string) (string,error) {
 }
 
 
+//使用系统内核删除文件
+func Delete_file(path string){
 
+    exec.Command(`cmd`, `/C`, `rd`, `/S`, `/Q`, path).Start()
+
+}
 
 
 

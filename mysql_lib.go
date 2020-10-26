@@ -3,6 +3,7 @@ package lib1
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -273,6 +274,9 @@ func Update_Field (base_id string,field string,value string,table_name string,da
 
 func Assemble_insert(data map[string]string, table string) string {
 
+     //字段扫描  去掉数据干扰
+	 data=SQL_filter_lib1(data)
+
 	var sql_str = " insert into " + table + " ("
 	//var sql_str1 string
 
@@ -310,6 +314,9 @@ func Assemble_insert(data map[string]string, table string) string {
 
 func Assemble_update(data map[string]string, where map[string]string, table string) string {
 
+data=SQL_filter_lib1(data)
+where=SQL_filter_lib1(where)
+
 	var sql_str = " update " + table + " set "
 	//var sql_str1 string
 
@@ -337,6 +344,9 @@ func Assemble_update(data map[string]string, where map[string]string, table stri
 
 //3 生成防止重复插入语句
 func Assemble_insert_exists(data map[string]string, where map[string]string, table string) string {
+
+data=SQL_filter_lib1(data)
+where=SQL_filter_lib1(where)
 
 	var sql_str = " insert into " + table + " ("
 
@@ -392,6 +402,27 @@ func Assemble_insert_exists(data map[string]string, where map[string]string, tab
 	return sql_str
 
 }
+
+
+//安全格式化工具 去掉数据干扰干扰
+//by 9571  2020年10月26日16:19:22
+func  SQL_filter_lib1(result map[string]string ) map[string]string {
+
+	sql_str_value := make(map[string]string)
+
+	str_tmp:=""
+
+	for key, value := range result {
+
+		str_tmp=value
+		str_tmp = strings.Replace(str_tmp, "'", "\\'", -1)
+		sql_str_value[key]=str_tmp
+
+	}
+
+	return sql_str_value
+}
+
 
 
 //MySQltool mode
