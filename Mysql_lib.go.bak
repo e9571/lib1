@@ -404,7 +404,7 @@ where=SQL_filter_lib1(where)
 }
 
 
-//安全格式化工具 去掉数据干扰
+//安全格式化工具 去掉数据干扰干扰
 //by 9571  2020年10月26日16:19:22
 func  SQL_filter_lib1(result map[string]string ) map[string]string {
 
