@@ -403,8 +403,31 @@ where=SQL_filter_lib1(where)
 
 }
 
+//删除数据
+func Assemble_delete( where map[string]string, table string) string {
 
-//安全格式化工具 去掉数据干扰
+where=SQL_filter_lib1(where)
+
+	var sql_str = " delete from " + table + "  "
+	
+
+	//强制 where
+	sql_str += " where "
+
+	//填充 Value
+	for key1, value1 := range where {
+		sql_str += " " + key1 + "='" + value1 + "'" + " and "
+	}
+
+	sql_str = sql_str[0 : len(sql_str)-4]
+
+	return sql_str
+
+}
+
+
+
+//安全格式化工具 去掉数据干扰干扰
 //by 9571  2020年10月26日16:19:22
 func  SQL_filter_lib1(result map[string]string ) map[string]string {
 

@@ -17,6 +17,7 @@ import (
 	"strings"
 	"time"
 	"path/filepath"
+	"encoding/json"
 )
 
 //专业函数工具类
@@ -579,4 +580,22 @@ func Create_path_os()  (string,error){
 
 	return exPath+"",err
 }
+
+//Json 快速打包
+func Json_Package(value interface{})  string {
+
+   send, err := json.Marshal(&value)
+
+   if err!=nil {
+
+    fmt.Println(err)
+
+    return ""
+
+    }
+
+     return string(send)
+}
+
+
 
