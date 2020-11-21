@@ -6,9 +6,9 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"strconv"
+	//"strconv"
 	"strings"
-	"syscall"
+	//"syscall"
 )
 
 //文件专业操作模块
@@ -104,7 +104,26 @@ func Create_File_info(path string) (map[string]string,error){
 
 	var file_info = make(map[string]string)
 
-	fileInfo, err := os.Stat(path)
+	//fileInfo, err := os.Stat(path)
+	
+	/*
+	
+	//多平台参考
+	if runtime.GOOS == "windows" {
+    fileinfo, _ := os.Stat(path)
+    stat := fileinfo.Sys().(*syscall.Win32FileAttributeData)
+    aTimeSince = time.Since(time.Unix(0, stat.LastAccessTime.Nanoseconds()))
+    cTimeSince = time.Since(time.Unix(0, stat.CreationTime.Nanoseconds()))
+    mTimeSince = time.Since(time.Unix(0, stat.LastWriteTime.Nanoseconds()))
+} else {
+    fileinfo, _ := os.Stat(path)
+    aTime = fileinfo.Sys().(*syscall.Stat_t).Atim
+    cTime = fileinfo.Sys().(*syscall.Stat_t).Ctim
+    mTime = fileinfo.Sys().(*syscall.Stat_t).Mtim
+    aTimeSince = time.Since(time.Unix(aTime.Sec, aTime.Nsec))
+    cTimeSince = time.Since(time.Unix(cTime.Sec, cTime.Nsec))
+    mTimeSince = time.Since(time.Unix(mTime.Sec, mTime.Nsec))
+}
 
 	if(os.IsNotExist(err)) {
 		fmt.Println("file not exist!")
@@ -144,8 +163,11 @@ func Create_File_info(path string) (map[string]string,error){
 		//文件访问权限
 		file_info["mode"]=fmt.Sprintf("%d",fileInfo.Mode())
 	}
+	*/
 
-	return  file_info,err
+	//return  file_info,err
+	
+		return  file_info,nil
 
 }
 

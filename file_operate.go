@@ -105,6 +105,27 @@ func WalkDir(dirPth, suffix string) (files []string, err error) {
 	return files, err
 }
 
+//获取指定文件夹下所有文件夹
+//GetDirList("D:/text")
+func GetDirList(dirpath string) ([]string, error) {
+
+	var dir_list []string
+	dir_err := filepath.Walk(dirpath,
+		func(path string, f os.FileInfo, err error) error {
+			if f == nil {
+				return err
+			}
+			if f.IsDir() {
+				dir_list = append(dir_list, path)
+				return nil
+			}
+
+			return nil
+		})
+	return dir_list, dir_err
+}
+
+
 //拷贝文件
 //源文件位置 拷贝位置
 func CopyFile(srcName string, dstName string) (written int64, err error) {
@@ -229,6 +250,23 @@ func Write_file(str string,path string) (error)  {
 
 }
 
+//文件写入 覆盖模式
+//https://www.cnblogs.com/kumata/p/10161754.html
+func WriteToFile(fileName string, content string) error {
+   f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
+   if err != nil {
+      fmt.Println("file create failed. err: " + err.Error())
+   } else {
+      // offset
+      //os.Truncate(filename, 0) //clear
+      n, _ := f.Seek(0, os.SEEK_END)
+      _, err = f.WriteAt([]byte(content), n)
+      //fmt.Println("write succeed!")
+      defer f.Close()
+   }
+return err
+}
+
 //数据写入 精确行 支持换行符
 func WriteListtoFile(List []string, filePath string) error {
 
@@ -282,19 +320,27 @@ func Create_New_File(fileName string) (string,error) {
 	if Exists(fileName)==true{
 		return  fileName,nil
 	}
+       
+	
+	os.Mkdir(fileName, os.ModePerm)
+/*
+<<<<<<< HEAD
+	os.Mkdir(fileName, os.ModePerm)
+=======
+>>>>>>> c1591de2fdf83ded971b5c103f7ab31acb9188c8
 
-	logFile, err := os.Create(fileName)
-
-	if err != nil {
-		//fmt.Println(err)
-		return "",err
-	}
-
-	logFile.Close()
+ */
 
 	return fileName,nil
 }
 
+
+//使用系统内核删除文件
+func Delete_file(path string){
+
+    exec.Command(`cmd`, `/C`, `rd`, `/S`, `/Q`, path).Start()
+
+}
 
 
 

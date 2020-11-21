@@ -17,6 +17,7 @@ import (
 	"strings"
 	"time"
 	"path/filepath"
+	"encoding/json"
 )
 
 //专业函数工具类
@@ -87,7 +88,7 @@ func High_rand(table string) string {
 	//var key_id string
 	t := time.Now()
 
-	key_id := table + "_" + fmt.Sprintf("%d", t.Unix()) + "_" + fmt.Sprintf("%d", rand.Intn(1000000))
+	key_id := table + "_" + fmt.Sprintf("%d", t.UnixNano()) + "_" + fmt.Sprintf("%d", rand.Intn(1000000))
 
 	return key_id
 
@@ -197,7 +198,8 @@ func Parse_float( value string) float64 {
 
 //正则表达式
 //应用参考
-//regexp_str = `{[.\s\S]*?}`
+//regexp_str := `{[.\s\S]*?}`
+//Get_data_preg_list(regexp_str,source)
 //regexp_str = `[+-]?(\d+)`
 func Get_data_preg(parameter string, source string) map[int]string {
 
@@ -216,12 +218,16 @@ func Get_data_preg(parameter string, source string) map[int]string {
 }
 
 //正则表达式 List 版本 顺序排列
+//regexp_str := `{[.\s\S]*?}`
+//Get_data_preg_list(regexp_str,source)
+//匹配次数 -1 无限次 n 指定次数 number int
 func Get_data_preg_list(parameter string, source string) []string {
 
 	reg := regexp.MustCompile(parameter)
 
 
 	line := reg.FindAllString(source, -1)
+	//line := reg.FindAllString(source, number)
 
 	//使用动态数组
 	 var result []string
@@ -502,7 +508,7 @@ func In_array(array_list []string,value string) bool{
 //conversion_Num(gjson.Get(data_source, "data."+strconv.Itoa(i) +".open").Num,10)
 func  Conversion_Num(number float64,number_place int)  string{
 
-	return 	strconv.FormatFloat(number, 'f', number_place, 32)
+	return 	strconv.FormatFloat(number, 'f', number_place, 64)
 
 }
 
@@ -574,4 +580,22 @@ func Create_path_os()  (string,error){
 
 	return exPath+"",err
 }
+
+//Json 快速打包
+func Json_Package(value interface{})  string {
+
+   send, err := json.Marshal(&value)
+
+   if err!=nil {
+
+    fmt.Println(err)
+
+    return ""
+
+    }
+
+     return string(send)
+}
+
+
 

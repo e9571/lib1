@@ -45,6 +45,7 @@ func Create_Format_time(type_str string) string {
 }
 
 //Go 语言 专用格式化 指定时间格式 转为  unix 时间
+//记得拷贝高精度时间转换包到文件夹下 2020年2月1日18:29:18
 func Get_appoint_number(time_str string) string {
 
 	os.Setenv("ZONEINFO", "conf/data.zip")
