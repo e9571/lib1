@@ -439,7 +439,10 @@ func  SQL_filter_lib1(result map[string]string ) map[string]string {
 
 		str_tmp=value
 		str_tmp = strings.Replace(str_tmp, "'", "\\'", -1)
+<<<<<<< HEAD
 		str_tmp = strings.Replace(str_tmp, "#", "\\#", -1)
+=======
+>>>>>>> 1588a7cc95798ea4c32109995354de7c8359a13c
 		sql_str_value[key]=str_tmp
 
 	}
