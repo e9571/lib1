@@ -440,6 +440,9 @@ func  SQL_filter_lib1(result map[string]string ) map[string]string {
 		str_tmp=value
 		str_tmp = strings.Replace(str_tmp, "'", "\\'", -1)
 		str_tmp = strings.Replace(str_tmp, "#", "\\#", -1)
+		str_tmp = strings.Replace(str_tmp, "--", "\\--", -1)
+		str_tmp = strings.Replace(str_tmp, "\\*", "\\\\*", -1)
+		str_tmp = strings.Replace(str_tmp, "*/", "\\*/", -1)
 
 		sql_str_value[key]=str_tmp
 
