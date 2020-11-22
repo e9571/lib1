@@ -476,9 +476,16 @@ func Create_CRC(data_source [3]string) string {
 //SQL专业过滤 来源 变形金刚框架 该框架的数据防御被阿里安全检测
 func Sql_filtrate(str string) string{
 
-	str = strings.Replace(str, ")", "", -1)//替换括号
-	str = strings.Replace(str, "\"", "", -1)//替换双引号
-	str = strings.Replace(str, "'", "", -1)//替换单引号
+	//str = strings.Replace(str, ")", "", -1)//替换括号
+	//str = strings.Replace(str, "\"", "", -1)//替换双引号
+	//str = strings.Replace(str, "'", "", -1)//替换单引号
+	
+	//2020 最新版
+	str = strings.Replace(str, "'", "\\'", -1)
+	str = strings.Replace(str, "#", "\\#", -1)
+	str = strings.Replace(str, "--", "\\--", -1)
+	str = strings.Replace(str, "\\*", "\\\\*", -1)
+	str = strings.Replace(str, "*/", "\\*/", -1)
 
 	return str
 }
