@@ -8,6 +8,25 @@ import (
 
 //Json to Map and Map to Json 通用转换库 Update 版本
 
+
+//高级 JSON 数据兼容转换包
+func Str_To_Json(str string)  map[string]string{
+
+	Json_value,err:=Json_to_map(str)
+
+	if err!=nil {
+		Json_value=Str_interface_to_json(str)
+	}
+
+	//尝试兼容转换
+	if len(Json_value)==0 {
+		Json_value=Str_interface_to_json(str)
+	}
+
+	return Json_value
+}
+
+
 //将 Map 转换成 JSON
 func Map_to_json(m map[string]interface{}) string {
 
