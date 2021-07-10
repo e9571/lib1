@@ -13,6 +13,15 @@ import (
 //<<<<<<< Updated upstream
 //修复 时间->时间戳 误差问题 使用高精度 时区模式
 
+var Path_exe string
+
+func init() {
+
+   //文件补丁 程序运行目录
+   	Path_exe, _ = Create_path_os()
+
+}
+
 //2016年4月7日13:12:03
 
 //=======
@@ -48,7 +57,11 @@ func Create_Format_time(type_str string) string {
 //记得拷贝高精度时间转换包到文件夹下 2020年2月1日18:29:18
 func Get_appoint_number(time_str string) string {
 
-	os.Setenv("ZONEINFO", "conf/data.zip")
+  if len(Path_exe)==0{
+      return "-1"
+  }
+
+	os.Setenv("ZONEINFO", Path_exe+"/conf/data.zip")
 	loc, _ := time.LoadLocation("Asia/Shanghai")        //设置时区
 	tt, _ := time.ParseInLocation("2006-01-02 15:04:05", time_str, loc)
 

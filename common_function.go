@@ -604,5 +604,27 @@ func Json_Package(value interface{})  string {
      return string(send)
 }
 
+//手动 Json 数据压缩 高精度
+func List_to_Json(list []string) string {
+
+	var str string
+
+	if len(list)==0 {
+		return str
+	}
+
+	str="["
+
+	for i:=0;i<len(list);i++ {
+		str+=list[i]+","
+	}
+
+	str = str[0 : len(str)-1]
+
+	str+="]"
+
+	return str
+
+}
 
 

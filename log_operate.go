@@ -101,16 +101,43 @@ func Create_log_add(data_write string,file_name string) {
 //获得最新日志 如果模块需要 返回文件名 使用静态路径
 func Create_new_log(static_path string,type_str string) (string,error) {
 
-	//根据时间线 生成日志
-	fileName :=static_path+ "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
 
-	//如果未定义路径
+
+	var err error
+	var fileName string
+
+
+
+	//如果未定义路径 使用程序目录生成路径
 	if len(static_path)==0{
-		fileName = "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
+		//path_exe, _ := Create_path_os()
+		//fileName = path_exe+"/"+"log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
+
+		path_exe, _ := Create_path_os()
+
+		//创建文件夹
+
+		fileName = path_exe+"/"+"log/"
+		//检查文件是否存在
+		fileName,err=Create_New_File(fileName)
+
+		if err!=nil {
+			return "", err
+		}
+
+		//创建文件
+		fileName =fileName+"/" +type_str+"_"+ Create_Format_time("flie_time") + ".log"
+
+		Write_file("initialize\n",fileName)
+
+	}else {
+		//根据时间线 生成日志
+		fileName =static_path+ "log/" +type_str+"_"+ Create_Format_time("flie_time")[0:10] + ".log"
+		//检查文件是否存在
+		fileName,err=Create_New_File(fileName)
 	}
 
-	//检查文件是否存在
-	fileName,err:=Create_New_File(fileName)
+
 
 	return fileName,err
 }
@@ -130,8 +157,9 @@ func Create_log_add_static(static_path string,data_write string,file_name string
 		fmt.Printf("%s", err.Error())
 	}
 
-	logger := log.New(logfile, "", log.Ldate|log.Ltime|log.Llongfile)
-	logger.Println(data_write)
+	//logger := log.New(logfile, "", log.Ldate|log.Ltime|log.Llongfile)
+	logger := log.New(logfile, "",log.Ldate|log.Ltime)
+	logger.Println("data_body:\n",data_write)
 
 	logfile.Close()
 }

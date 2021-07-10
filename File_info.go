@@ -37,10 +37,10 @@ func ListFile(myfolder string) (map[string]string,error) {
 	for _, file := range files {
 		if file.IsDir() {
 			//ListFile(myfolder + "/" + file.Name())
-			out_put[myfolder + "" + file.Name()]=myfolder
+			out_put[myfolder + "/" + file.Name()]=myfolder
 		} else {
 			//fmt.Println(myfolder + "/" + file.Name())
-			out_put[myfolder + "" + file.Name()]=myfolder
+			out_put[myfolder + "/" + file.Name()]=myfolder
 		}
 	}
 
