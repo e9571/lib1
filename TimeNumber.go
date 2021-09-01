@@ -84,8 +84,6 @@ func Create_Format_time(type_str string) string {
 	switch type_str {
 	case "time":
 		str_time = time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
-	case "flie_time":
-		str_time = time.Unix(timestamp, 0).Format("2006_01_02_15_04_05")
 	//新增参数 毫秒
     case "msec":
 		str_time = tNow.Format("2006-1-2 15:04:05.000")
@@ -117,7 +115,7 @@ func Create_Format_time(type_str string) string {
 		str_time = tNow.Format("200612150405.000000000")
 		str_time = strings.Replace(str_time, ".", "", -1)
 	default:
-		str_time="help:time,flie_time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str"
+		str_time="help:time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str"
 
 	}
 
