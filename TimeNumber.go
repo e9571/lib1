@@ -1,10 +1,10 @@
 package lib1
 
 import (
-
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -30,22 +30,94 @@ func init() {
 //time
 //flie_time
 //unix
-//lib1.Create_Format_time("time")
+//获取常规时间
+//lib1.Create_Format_time("time") 
+//获取帮助文件
+///lib1.Create_Format_time("help") 
+/*
+数值样式参考
+help:time,flie_time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str
+2021-9-1 11:55:08.822
+2021-9-1 11:55:08.823065
+2021-9-1 11:55:08.823065300
+20210901115508
+202191115508823
+202191115508823065
+202191115508823065300
+1630468508
+1630468508823
+1630468508823065
+1630468508824063000
+
+*/
+//更新 2021年9月1日11:35:16
 func Create_Format_time(type_str string) string {
 
 	tNow := time.Now()
 	timestamp := tNow.Unix()
+	
+	//时间格式化参数 官方 文档
+	/*
+	const (
+    ANSIC       = "Mon Jan _2 15:04:05 2006"
+    UnixDate    = "Mon Jan _2 15:04:05 MST 2006"
+    RubyDate    = "Mon Jan 02 15:04:05 -0700 2006"
+    RFC822      = "02 Jan 06 15:04 MST"
+    RFC822Z     = "02 Jan 06 15:04 -0700" // RFC822 with numeric zone
+    RFC850      = "Monday, 02-Jan-06 15:04:05 MST"
+    RFC1123     = "Mon, 02 Jan 2006 15:04:05 MST"
+    RFC1123Z    = "Mon, 02 Jan 2006 15:04:05 -0700" // RFC1123 with numeric zone
+    RFC3339     = "2006-01-02T15:04:05Z07:00"
+    RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
+    Kitchen     = "3:04PM"
+    // Handy time stamps.
+    Stamp      = "Jan _2 15:04:05"
+    StampMilli = "Jan _2 15:04:05.000"
+    StampMicro = "Jan _2 15:04:05.000000"
+    StampNano  = "Jan _2 15:04:05.000000000"
+    )
+    */
+	
 
 	str_time := ""
 
 	switch type_str {
 	case "time":
-		//只能是 2006-01-02 15:04:05 根据官方文档
 		str_time = time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
 	case "flie_time":
 		str_time = time.Unix(timestamp, 0).Format("2006_01_02_15_04_05")
+	//新增参数 毫秒
+    case "msec":
+		str_time = tNow.Format("2006-1-2 15:04:05.000")
+	//新增参数 微秒
+    case "micro":
+		str_time = tNow.Format("2006-1-2 15:04:05.000000")
+	//新增参数 纳秒
+   case "nano":
+		str_time = tNow.Format("2006-1-2 15:04:05.000000000")
+   //Unix 模式
 	case "unix":
-		str_time = fmt.Sprintf("%d", timestamp)
+	   str_time = fmt.Sprintf("%d", timestamp)
+	case "unix_micro":
+	   str_time =fmt.Sprintf("%d", time.Now().UnixNano() /  1000000)
+	case "unix_msec":
+		str_time = fmt.Sprintf("%v", time.Now().UnixNano() /1000)
+	case "unix_nano":
+		str_time = fmt.Sprintf("%v", time.Now().UnixNano())
+  //Str模式
+	case "time_str":
+		str_time = time.Unix(timestamp, 0).Format("20060102150405")
+    case "msec_str":
+		str_time = tNow.Format("200612150405.000")
+		str_time = strings.Replace(str_time, ".", "", -1)
+    case "micro_str":
+		str_time = tNow.Format("200612150405.000000")
+		str_time = strings.Replace(str_time, ".", "", -1)
+   case "nano_str":
+		str_time = tNow.Format("200612150405.000000000")
+		str_time = strings.Replace(str_time, ".", "", -1)
+	default:
+		str_time="help:time,flie_time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str"
 
 	}
 
