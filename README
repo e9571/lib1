@@ -6,9 +6,11 @@
 2 新增 Json 任意结构体打包函数 Json_Package
 3 新增 []string 直接打包成 Json 函数 List_to_Json 
 4 升级 Create_Format_time 函数，支持 help 查询模式  lib1.Create_Format_time("help") 即可查询函数所有可选参数 ，支持 秒，毫秒，微秒，纳秒 模式输出
-函数可选参数
+函数可选参数：
+
 help:time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str
-支持目前常用 12 种时间格式的输出，
+
+支持目前常用 12 种时间格式的输出
 
 字符串常规模式
 2021-9-1 12:16:06.040
