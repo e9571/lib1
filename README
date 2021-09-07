@@ -7,17 +7,15 @@
 函数：Get_time_str
 参数: y m d h i s
 
-
- //Test
-    
-  value:=lib1.Create_Format_time("time_str")
-  fmt.Println(value)
-  fmt.Println("y",Get_time_str(value1,"y"))
-  fmt.Println("m",Get_time_str(value1,"m"))
-  fmt.Println("d",Get_time_str(value1,"d"))
-  fmt.Println("h",Get_time_str(value1,"h"))
-  fmt.Println("i",Get_time_str(value1,"i"))
-  fmt.Println("s",Get_time_str(value1,"s"))
+Test：
+value:=lib1.Create_Format_time("time_str")
+fmt.Println(value)
+fmt.Println("y",Get_time_str(value1,"y"))
+fmt.Println("m",Get_time_str(value1,"m"))
+fmt.Println("d",Get_time_str(value1,"d"))
+fmt.Println("h",Get_time_str(value1,"h"))
+fmt.Println("i",Get_time_str(value1,"i"))
+fmt.Println("s",Get_time_str(value1,"s"))
 
 1.7 版本
 
