@@ -193,3 +193,49 @@ func TIMESTAMPDIFF(datetime_expr_start int64, datetime_expr_complete int64, type
 	return value_return
 
 }
+
+//获取时间戳中的指定标志位
+// y m d h i s
+/*
+	//时间专用函数 获取时间戳中的 年 月 日 秒
+    //Test
+	value:=lib1.Create_Format_time("time_str")
+	fmt.Println(value)
+	fmt.Println("y",Get_time_str(value1,"y"))
+	fmt.Println("m",Get_time_str(value1,"m"))
+	fmt.Println("d",Get_time_str(value1,"d"))
+	fmt.Println("h",Get_time_str(value1,"h"))
+	fmt.Println("i",Get_time_str(value1,"i"))
+	fmt.Println("s",Get_time_str(value1,"s"))
+ */
+func Get_time_str(value,Type string)  string{
+
+
+	if len(value)!=14 {
+		fmt.Println("Length_err",len(value),value)
+		return value
+	}
+
+	Type=strings.ToLower(Type)
+
+	//20210901121606
+
+	switch Type {
+	case "y":
+		value=value[0:4]
+	case "m":
+		value=value[4:6]
+	case "d":
+		value=value[6:8]
+	case "h":
+		value=value[8:10]
+	case "i":
+		value=value[10:12]
+	case "s":
+		value=value[12:14]
+	default:
+	}
+
+    return value
+
+}
