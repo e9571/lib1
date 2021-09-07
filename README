@@ -1,5 +1,24 @@
 
 
+1.71 版本
+
+时间专用函数 获取时间戳中的 年 月 日 秒
+
+函数：Get_time_str
+参数: y m d h i s
+
+
+ //Test
+    
+  value:=lib1.Create_Format_time("time_str")
+  fmt.Println(value)
+  fmt.Println("y",Get_time_str(value1,"y"))
+  fmt.Println("m",Get_time_str(value1,"m"))
+  fmt.Println("d",Get_time_str(value1,"d"))
+  fmt.Println("h",Get_time_str(value1,"h"))
+  fmt.Println("i",Get_time_str(value1,"i"))
+  fmt.Println("s",Get_time_str(value1,"s"))
+
 1.7 版本
 
 1 修复 Get_HTTP 续航 BUG ，调用超过 3000W次时候不会因为 defer 异常而报错
