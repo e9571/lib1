@@ -1,14 +1,15 @@
 package lib1
 
 import (
-	"path/filepath"
-	"os"
-	"io/ioutil"
-	"io"
-	"fmt"
-	"os/exec"
-	"strings"
 	"bufio"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 //文件操作 1.1
@@ -152,6 +153,49 @@ func ReadAll_Byte(filePth string) ([]byte, error) {
 	return ioutil.ReadAll(f)
 }
 
+//文件读取 缓存模式  适用于超大文件
+
+// 文件一块一块的读取
+func ReadBlock(filePath string) string{
+
+	start1 := time.Now()
+	note:=""
+	count:=0
+	
+	FileHandle, err := os.Open(filePath)
+	if err != nil {
+		//log.Println(err)
+		fmt.Println(err)
+		return ""
+	}
+	defer FileHandle.Close()
+    // 设置每次读取字节数
+	buffer := make([]byte, 2048)
+	for {
+
+		n, err := FileHandle.Read(buffer)
+		// 控制条件,根据实际调整
+		if err != nil && err != io.EOF {
+			//log.Println(err)
+			fmt.Println(err)
+		}
+		if n == 0 {
+			break
+		}
+		// 如下代码打印出每次读取的文件块(字节数)
+		//fmt.Println(string(buffer[:n]))
+		note+=string(buffer[:n])
+		count++
+		fmt.Println("ReadBlock",count,len(note))
+	}
+	
+	fmt.Println("readBolck spend : ", time.Now().Sub(start1))
+	
+	return note
+}
+
+//原文链接：https://blog.csdn.net/weixin_37717557/article/details/106482955
+
 
 //文件写入专业操作类
 
@@ -210,7 +254,7 @@ func  Create_Source(path string) ([]string,error) {
 
 }
 
-//写入文件 常规写入
+//写入文件 常规写入 写入模式 追加
 func Write_file(str string,path string) (error)  {
 
 	//var wireteString = str
