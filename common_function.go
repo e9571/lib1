@@ -118,7 +118,7 @@ func High_Rand_User(prefix string) string {
 func Get_HTTP(url_str string) (string,error) {
 
 	c := &http.Client{
-		Timeout: 15 * time.Second,
+		Timeout: 30 * time.Second,
 	}
 
 	resp, err := c.Get(url_str)
@@ -141,6 +141,8 @@ func Get_HTTP(url_str string) (string,error) {
 
 	return string(body),err
 }
+
+
 
 
 //数值快速转换
@@ -177,6 +179,18 @@ func Parse_int64( value string) int64 {
 
 	if err != nil {
 		return -1
+	}
+
+	return int64
+}
+
+//通用 String 转 int64 自动处理异常
+func Parse_uint64( value string) uint64 {
+
+	int64, err := strconv.ParseUint(value, 10, 64)
+
+	if err != nil {
+		return 0
 	}
 
 	return int64
@@ -219,6 +233,7 @@ func Get_data_preg(parameter string, source string) map[int]string {
 
 //正则表达式 List 版本 顺序排列
 //regexp_str := `{[.\s\S]*?}`
+//regexp_str = `nft-block-img(.*?)alt`
 //Get_data_preg_list(regexp_str,source)
 //匹配次数 -1 无限次 n 指定次数 number int
 func Get_data_preg_list(parameter string, source string) []string {
@@ -239,6 +254,9 @@ func Get_data_preg_list(parameter string, source string) []string {
 
 	return result
 }
+
+
+
 
 //增强输出 返回包含指定特征的数据块 和正则表达式配合 只返回第一个符合的
 //应用参考：
@@ -319,11 +337,23 @@ func Create_number(source string) string{
 	return result1[0]
 }
 
-//提取所有英文字符 比特币地址专用
+//提取所有中英文字符（字母+英文） 比特币地址专用
 func Get_data_preg_address(parameter string) string {
 
 	data:=""
 	regexp_str := `[A-Za-z\d]+`
+	result:=Get_data_preg(regexp_str,parameter)
+
+	data=result[0]
+
+	return data
+}
+
+//仅提取字母
+func Get_data_preg_address_letter(parameter string) string {
+
+	data:=""
+	regexp_str := `[A-Za-z]+`
 	result:=Get_data_preg(regexp_str,parameter)
 
 	data=result[0]
@@ -356,6 +386,8 @@ func Get_data_preg_search_str(parameter string,regexp_str string,sign string,num
 	return parameter
 
 }
+
+
 
 
 //打印指定颜色 输出
@@ -482,9 +514,9 @@ func Sql_filtrate(str string) string{
 	
 	//2020 最新版
 	str = strings.Replace(str, "'", "\\'", -1)
-	str = strings.Replace(str, "#", "\\#", -1)
-	str = strings.Replace(str, "--", "\\--", -1)
-	str = strings.Replace(str, "\\*", "\\\\*", -1)
+	str = strings.Replace(str, "#", "\\#", -1)     //# 号
+	str = strings.Replace(str, "--", "\\--", -1)   //-- 分隔符号
+	str = strings.Replace(str, "\\*", "\\\\*", -1)  //特殊注释符号
 	str = strings.Replace(str, "*/", "\\*/", -1)
 
 	return str

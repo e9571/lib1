@@ -106,6 +106,52 @@ func WalkDir(dirPth, suffix string) (files []string, err error) {
 	return files, err
 }
 
+
+//新增文件获取方式 2022年6月16日08:40:51
+
+//获取指定文件夹下所有文件 不用匹配用户名 递归模式 使用全局变量接收
+
+//使用方式
+//lib1.GetFiles(models.Path_exe+"/image_url")
+//file_list:=lib1.File_list
+
+var File_list []string
+func GetFiles(folder string){
+	files, _ := ioutil.ReadDir(folder)
+	for _,file := range files{
+		if file.IsDir(){
+			GetFiles(folder + "/" + file.Name())
+		}else{
+			//fmt.Println(folder + "/" + file.Name())
+			File_list=append(File_list,folder + "/" + file.Name())
+		}
+	}
+ 
+}
+
+//获取指定文件夹下所有文件 直接跳过目录 自动递归变量接收
+//使用方式
+//var file_list []string
+//file_list, _ = lib1.GetAllFile(models.Path_exe+"/image_url", file_list)
+
+func GetAllFile(pathname string, s []string) ([]string, error) {
+	rd, err := ioutil.ReadDir(pathname)
+	if err != nil {
+		fmt.Println("read dir fail:", err)
+		return s, err
+	}
+ 
+	for _, fi := range rd {
+		if !fi.IsDir() {
+			fullName := pathname + "/" + fi.Name()
+			s = append(s, fullName)
+		}
+	}
+	return s, nil
+}
+
+
+
 //获取指定文件夹下所有文件夹
 //GetDirList("D:/text")
 func GetDirList(dirpath string) ([]string, error) {
@@ -296,7 +342,7 @@ func Write_file(str string,path string) (error)  {
 
 //文件写入 覆盖模式
 //https://www.cnblogs.com/kumata/p/10161754.html
-func WriteToFile(fileName string, content string) error {
+func WriteToFile(fileName string,content string) error {
    f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
    if err != nil {
       fmt.Println("file create failed. err: " + err.Error())
@@ -306,8 +352,8 @@ func WriteToFile(fileName string, content string) error {
       n, _ := f.Seek(0, os.SEEK_END)
       _, err = f.WriteAt([]byte(content), n)
       //fmt.Println("write succeed!")
-      defer f.Close()
    }
+    f.Close()
 return err
 }
 
