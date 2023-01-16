@@ -259,6 +259,22 @@ func CheckFileIsExist(filename string) bool {
 	return exist
 }
 
+// 判断所给路径是否为文件夹
+func IsDir(name string) bool {
+	if info, err := os.Stat(name); err == nil {
+		return info.IsDir()
+	}
+	return false
+}
+
+
+   
+// 判断所给路径是否为文件
+func IsFile(path string) bool {
+    return !IsDir(path)  
+}
+
+
 
 //新增操作函数
 
@@ -300,7 +316,7 @@ func  Create_Source(path string) ([]string,error) {
 
 }
 
-//写入文件 常规写入 写入模式 追加
+//写入文件 常规写入 写入模式 追加 记得换行
 func Write_file(str string,path string) (error)  {
 
 	//var wireteString = str
@@ -315,7 +331,7 @@ func Write_file(str string,path string) (error)  {
 
 	/***************************** 第一种方式: 使用 io.WriteString 写入文件 ***********************************************/
 	if CheckFileIsExist(filename) { //如果文件存在
-		f, err = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
+		f, err = os.OpenFile(filename,os.O_APPEND, 0666) //打开文件
 		//fmt.Println("文件存在")
 	} else {
 		f, err = os.Create(filename) //创建文件
@@ -339,6 +355,41 @@ func Write_file(str string,path string) (error)  {
 	return  err
 
 }
+
+//追加
+func Write_line(str string,filePath string) (error)  {
+
+	//检测文件是否创建
+	if CheckFileIsExist(filePath)==false {
+		 os.Create(filePath) //创建文件
+	}
+
+	//file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND, 0666)
+
+	if err != nil {
+		//fmt.Println("文件打开失败", err)
+		return err
+	}
+	//及时关闭file句柄
+	defer file.Close()
+
+	//写入文件时，使用带缓存的 *Writer
+	write := bufio.NewWriter(file)
+	/*
+	for i := 0; i < 5; i++ {
+		write.WriteString("C语言中文网 \r\n")
+	}
+	*/
+	write.WriteString(str)
+
+	//Flush将缓存的文件真正写入到文件中
+	write.Flush()
+
+	return err
+
+}
+
 
 //文件写入 覆盖模式
 //https://www.cnblogs.com/kumata/p/10161754.html

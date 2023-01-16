@@ -568,6 +568,7 @@ func Create_ip() string {
 			if ipnet.IP.To4() != nil {
 				fmt.Println(ipnet.IP.String())
 				ip=ipnet.IP.String()
+				fmt.Println(ip)
 				break
 			}
 		}

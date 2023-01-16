@@ -1,9 +1,10 @@
 package lib1
 
 import (
-    "encoding/json"
-    "strconv"
-    "strings"
+	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 //Json to Map and Map to Json 通用转换库 Update 版本
@@ -122,4 +123,37 @@ if  len(listStrTmp)==2{
    }
 
 return result
+}
+
+//Node.js Map 类操作参数
+func Str_To_Json_node(str string)  map[string]string{
+
+	result :=make(map[string]string)
+
+	//正则表达式提取数据
+	regexp_str := `["[.\s\S]*?"]`
+	list:=Get_data_preg_list(regexp_str,str)
+
+	//fmt.Println(list)
+
+	regexp_str = `"[.\s\S]*?"`
+	for i:=0;i<len(list);i++ {
+
+		list_tmp:=Get_data_preg_list(regexp_str,list[i])
+
+		if len(list_tmp)!=2 {
+			fmt.Println("Str_To_Json_node","length_err","145")
+			continue
+		}
+
+		key:=list_tmp[0]
+		value:=list_tmp[1]
+
+		key = strings.Replace(key, `"`, "", -1)
+		value = strings.Replace(value, `"`, "", -1)
+
+		result[key]=value
+	}
+
+	return result
 }
