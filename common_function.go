@@ -344,7 +344,12 @@ func Get_data_preg_address(parameter string) string {
 	regexp_str := `[A-Za-z\d]+`
 	result:=Get_data_preg(regexp_str,parameter)
 
-	data=result[0]
+	//data=result[0]
+	//数据补丁 2024年2月20日17:08:05
+	for i:=0;i<len(result);i++ {
+		data+=result[i]
+	}
+
 
 	return data
 }

@@ -1,93 +1,9 @@
-2023 2.0  版
 
-增加字符串类型排序库 str_lib.go
-
-2023年8月11日16:20:23
-
-2023 最新版
-
-1 增加与 Node.js 交互时 Map list解析，函数位于 Json_Map.go 中
-
-2023年1月16日17:22:56
-
-1.73 版本 
-
-1 增加 Uint64 类型转换
-
-2 新增文件夹内全部文件获取函数，直接输入路径，不用加后缀名即可获取全部文件
-  两个函数参考，一个全局变量接收模式一个局部变量接收，均采用递归
-
-2022年6月16日09:35:28
- 
-
-1.72 版本
-
-
-更新：
-
-file_operate.go 新增超大文件缓存读取函数 ReadBlock(filePath string)
-
-每次读取 2048 字节的数据,读取数据时会显示当前读取计数和累计读取的文件大小
-
-应用场景：超大文件读取
-
-
-
-
-2021年9月23日09:40:31
-
-1.71 版本
-
-时间专用函数 获取时间戳中的 年 月 日 秒
-
-函数：Get_time_str
-参数: y m d h i s
-
-Test：
-value:=lib1.Create_Format_time("time_str")
-fmt.Println(value)
-fmt.Println("y",Get_time_str(value1,"y"))
-fmt.Println("m",Get_time_str(value1,"m"))
-fmt.Println("d",Get_time_str(value1,"d"))
-fmt.Println("h",Get_time_str(value1,"h"))
-fmt.Println("i",Get_time_str(value1,"i"))
-fmt.Println("s",Get_time_str(value1,"s"))
-
-1.7 版本
-
-1 修复 Get_HTTP 续航 BUG ，调用超过 3000W次时候不会因为 defer 异常而报错
-2 新增 Json 任意结构体打包函数 Json_Package
-3 新增 []string 直接打包成 Json 函数 List_to_Json 
-4 升级 Create_Format_time 函数，支持 help 查询模式  lib1.Create_Format_time("help") 即可查询函数所有可选参数 ，支持 秒，毫秒，微秒，纳秒 模式输出
-函数可选参数：
-
-help:time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str
-
-支持目前常用 12 种时间格式的输出
-
-字符串常规模式
-2021-9-1 12:16:06.040
-2021-9-1 12:16:06.041505
-2021-9-1 12:16:06.041505200
-字符串模式
-20210901121606
-202191121606042
-202191121606042569
-202191121606043098800
-Unix 模式
-1630469766
-1630469766043
-1630469766044140
-1630469766044140400
-
-
-
-2021年9月1日12:09:52
 
 
 1.2 版本 
 
-1 标准化文件头
+1 统一文件头，头文件均大写
 
 2 新增 Json to Map 和 Map to json 数据转换，使用类型反射精确获取数据类型后进行通用转换，所有返回数据均为 String
 

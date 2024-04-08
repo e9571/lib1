@@ -1,6 +1,9 @@
 package lib1
 
-import 	"sort"
+import (
+	"sort"
+	"strings"
+)
 
 //字符串处理专用函数 处理复杂字符串需求
 
@@ -37,6 +40,7 @@ func (t StringList) Swap(i, j int) {
 	t[i], t[j] = t[j], t[i]
 }
 
+//排序模式
 func SortPackage(data []string,Type int) []string{
 
 	var list StringList
@@ -56,4 +60,25 @@ func SortPackage(data []string,Type int) []string{
 
 	return list
 
+}
+
+//字符串模式
+func SortPackageStr(data []string,Type int) (string,string){
+
+	list:=SortPackage(data,Type)
+
+	str_tmp:=""
+
+	for i:=0;i<len(list);i++ {
+		str_tmp+=list[i]+"@"
+	}
+
+	str_tmp = str_tmp[0 : len(str_tmp)-1]
+
+    return str_tmp,DefaultEncodeMD5(str_tmp)
+}
+
+//无差别对比字符串 返回符合数量
+func Str_Count(data1,data2 string) int {
+	return 	strings.Count(strings.ToLower(data1), strings.ToLower(data2))
 }

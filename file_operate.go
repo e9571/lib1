@@ -191,12 +191,25 @@ func CopyFile(srcName string, dstName string) (written int64, err error) {
 
 //读取文件 字节流模式
 func ReadAll_Byte(filePth string) ([]byte, error) {
-	f, err := os.Open(filePth)
+	//f, err := os.Open(filePth)
+	//linux
+	f, err:=os.OpenFile(filePth, os.O_APPEND, 0666)
 	if err != nil {
 		return nil, err
 	}
 
 	return ioutil.ReadAll(f)
+}
+
+//读取文件 字节流模式
+func ReadAll_Byte_Linux(filePth string) ([]byte, error) {
+	//f, err := os.Open(filePth)
+	//linux
+	content, err := ioutil.ReadFile(filePth)
+	if err != nil {
+		return nil, err
+	}
+	return  content,nil
 }
 
 //文件读取 缓存模式  适用于超大文件
