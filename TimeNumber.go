@@ -125,7 +125,7 @@ func Create_Format_time(type_str string) string {
 
 //Go 语言 专用格式化 指定时间格式 转为  unix 时间
 //记得拷贝高精度时间转换包到文件夹下 2020年2月1日18:29:18
-func Get_appoint_number(time_str string) string {
+func Unix_number(time_str string) string {
 
   if len(Path_exe)==0{
       return "-1"
@@ -140,7 +140,7 @@ func Get_appoint_number(time_str string) string {
 }
 
 //把 unix 时间按转为 指定时间
-func Convert_appoint_number(unix_str string) string {
+func Unix_time(unix_str string) string {
 
 	int_value, _ := strconv.ParseInt(unix_str, 10, 64)
 
@@ -148,8 +148,34 @@ func Convert_appoint_number(unix_str string) string {
 
 }
 
-//时间类专用计算
+//新增时间快捷计算函数
 
+//获取币安标准时间
+func Time_standard(unix string) string {
+
+	if len(unix)!=13 {
+		return ""
+	}
+
+	unix = unix[0 : len(unix)-3]
+	return  Unix_time(unix)
+}
+
+//获取指定日期是周几
+//fmt.Println(models.Week(lib1.Create_Format_time("time")))
+func Weekday(timeStr string)string  {
+
+	layout := "2006-01-02 15:04:05"
+	utcTime, _ := time.Parse(layout, timeStr)
+
+	Week:=int(utcTime.Local().Weekday())
+
+	return strconv.Itoa(Week)
+}
+
+
+
+//时间类专用计算
 //获取两个时间的时间差 传入 unix 数据 秒数
 //SECOND
 //MINUTE
