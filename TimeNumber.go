@@ -173,6 +173,34 @@ func Weekday(timeStr string)string  {
 	return strconv.Itoa(Week)
 }
 
+//生成高精度 group_id 秒级
+func Group_id_sec(symbol string) string{
+	group_id:=Create_Format_time("time")
+	group_id=strings.Replace(group_id, " ", "", -1)
+	group_id=strings.Replace(group_id, ":", "", -1)
+	group_id=strings.Replace(group_id, "-", "", -1)
+
+	if len(symbol)>0 {
+		return symbol+"_"+group_id
+	}
+
+	return group_id
+}
+
+//格式化指定时间，生成数据简写与时序标志位(小时级)
+func Create_time_id(timeStr string) (string,string){
+
+	layout := "2006-01-02 15:04:05" //常规时间标志位
+	layout_day_hour:= "0215" //简写时间标志位 日 小时
+
+	utcTime, _ := time.Parse(layout, timeStr)
+
+	time_sign := utcTime.Format("20060102150405")
+
+	date_sign := utcTime.Format(layout_day_hour)
+
+	return time_sign,date_sign
+}
 
 
 //时间类专用计算

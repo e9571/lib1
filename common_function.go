@@ -142,7 +142,39 @@ func Get_HTTP(url_str string) (string,error) {
 	return string(body),err
 }
 
+//超时定制版本
+func Get_HTTP_wait(url_str string,wait int) (string,error) {
 
+	fmt.Println(Create_Format_time("time"),"open http",url_str,"wait ",wait)
+
+	c := &http.Client{
+		Timeout: time.Second*time.Duration(wait) * time.Second,
+	}
+
+	resp, err := c.Get(url_str)
+
+	//对数据进行延迟关闭
+	//defer resp.Body.Close()
+
+	if err!=nil {
+		return "",err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	//续航补丁 2019年9月20日19:53:05
+	resp.Body.Close()
+
+	if err != nil {
+		return "",err
+	}
+
+	html_str:=string(body)
+
+	fmt.Println(Create_Format_time("time"),"body",len(html_str))
+
+	return html_str,err
+}
 
 
 //数值快速转换
@@ -234,6 +266,8 @@ func Get_data_preg(parameter string, source string) map[int]string {
 //正则表达式 List 版本 顺序排列
 //regexp_str := `{[.\s\S]*?}`
 //regexp_str = `nft-block-img(.*?)alt`
+//提取表格
+//regexp_str = `<tr>[.\s\S]*?</tr>`
 //Get_data_preg_list(regexp_str,source)
 //匹配次数 -1 无限次 n 指定次数 number int
 func Get_data_preg_list(parameter string, source string) []string {
