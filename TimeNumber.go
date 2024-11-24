@@ -33,7 +33,8 @@ func init() {
 //获取常规时间
 //lib1.Create_Format_time("time") 
 //获取帮助文件
-///lib1.Create_Format_time("help") 
+///lib1.Create_Format_time("help")
+//dir 新增文件目录模式
 /*
 数值样式参考
 help:time,flie_time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str
@@ -114,6 +115,9 @@ func Create_Format_time(type_str string) string {
    case "nano_str":
 		str_time = tNow.Format("200612150405.000000000")
 		str_time = strings.Replace(str_time, ".", "", -1)
+	//文件目录模式
+	case "dir":
+		str_time = time.Unix(timestamp, 0).Format("20060102")
 	default:
 		str_time="help:time,msec,micro,nano,unix,unix_micro,unix_msec,unix_nano,time_str,msec_str,micro_str,nano_str"
 
@@ -130,6 +134,9 @@ func Unix_number(time_str string) string {
   if len(Path_exe)==0{
       return "-1"
   }
+
+  //转换补丁
+	time_str = strings.Replace(time_str, "/", "-", -1)
 
 	os.Setenv("ZONEINFO", Path_exe+"/conf/data.zip")
 	loc, _ := time.LoadLocation("Asia/Shanghai")        //设置时区
@@ -161,16 +168,31 @@ func Time_standard(unix string) string {
 	return  Unix_time(unix)
 }
 
-//获取指定日期是周几
+//获取指定日期是周几 亚洲时间
 //fmt.Println(models.Week(lib1.Create_Format_time("time")))
-func Weekday(timeStr string)string  {
+func Week_day(timeStr string)string  {
 
 	layout := "2006-01-02 15:04:05"
 	utcTime, _ := time.Parse(layout, timeStr)
 
-	Week:=int(utcTime.Local().Weekday())
+	Week:=int(utcTime.Local().Weekday())-1
+
+	//日期补丁
+	if Week==-1 {
+		Week=6
+	}
 
 	return strconv.Itoa(Week)
+}
+
+//获取指定日期偏移时间 高精度自定义 与 主时间函数 Create_Format_time 兼容
+func Day_add(timeStr string,place int)  string{
+	layout := "2006-01-02 15:04:05" //常规时间标志位
+	utcTime, _ := time.Parse(layout, timeStr)
+	getTime := utcTime.AddDate(0, 0, place)                //年，月，日   获取一天前的时间
+	resTime := getTime.Format("2006-01-02 15:04:05") //获取的时间的格式
+	//fmt.Println(resTime)
+	return resTime
 }
 
 //生成高精度 group_id 秒级
@@ -187,19 +209,23 @@ func Group_id_sec(symbol string) string{
 	return group_id
 }
 
-//格式化指定时间，生成数据简写与时序标志位(小时级)
-func Create_time_id(timeStr string) (string,string){
+//格式化指定时间，生成数据简写与时序标志位(返回 标准时序 天 小时 分钟)
+func Create_time_id(timeStr string) (string,string,string,string){
 
 	layout := "2006-01-02 15:04:05" //常规时间标志位
-	layout_day_hour:= "0215" //简写时间标志位 日 小时
+	layout_day:= "20060102" //天标志 年+月+日
+	layout_hour:= "0215" //小时标志 天+小时
+	layout_minute:= "1504" //分钟标志 小时+分钟
 
 	utcTime, _ := time.Parse(layout, timeStr)
 
 	time_sign := utcTime.Format("20060102150405")
 
-	date_sign := utcTime.Format(layout_day_hour)
+	date_day := utcTime.Format(layout_day)
+	date_hour := utcTime.Format(layout_hour)
+	date_minute := utcTime.Format(layout_minute)
 
-	return time_sign,date_sign
+	return time_sign,date_day,date_hour,date_minute
 }
 
 
@@ -264,6 +290,16 @@ func TIMESTAMPDIFF(datetime_expr_start int64, datetime_expr_complete int64, type
  */
 func Get_time_str(value,Type string)  string{
 
+	//判断长度是否是标准时间
+	if len(value)!=19 {
+		fmt.Println("Length_err",len(value),value)
+		return value
+	}
+
+	value = strings.Replace(value, "/", "-", -1)
+
+	//生成标准时间 ID
+	value,_,_,_=Create_time_id(value)
 
 	if len(value)!=14 {
 		fmt.Println("Length_err",len(value),value)
@@ -275,16 +311,22 @@ func Get_time_str(value,Type string)  string{
 	//20210901121606
 
 	switch Type {
+	//年
 	case "y":
 		value=value[0:4]
+	//月
 	case "m":
 		value=value[4:6]
+	//日
 	case "d":
 		value=value[6:8]
+	//小时
 	case "h":
 		value=value[8:10]
+	//分
 	case "i":
 		value=value[10:12]
+	//秒
 	case "s":
 		value=value[12:14]
 	default:

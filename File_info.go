@@ -175,22 +175,23 @@ func File_MD5(path string) string {
 
 	f, err := os.Open(path)
 
-if err != nil {
+	if err != nil {
 
-	fmt.Println("Open", err)
-return ""
+		fmt.Println("Open", err)
+		return ""
+	}
+
+	defer f.Close()
+	md5hash := md5.New()
+	if _, err := io.Copy(md5hash, f);
+		err != nil {
+		fmt.Println("Copy", err)
+		return ""
+	}
+
+	//tmp:=md5hash.Sum(nil)
+	//fmt.Printf("%x\n", md5hash.Sum(nil))
+
+	return strings.ToUpper(fmt.Sprintf("%x", md5hash.Sum(nil)))
+
 }
-
-defer f.Close()
-md5hash := md5.New()
-if _, err := io.Copy(md5hash, f);
-err != nil { fmt.Println("Copy", err)
-return ""
-}
-
-//tmp:=md5hash.Sum(nil)
-//fmt.Printf("%x\n", md5hash.Sum(nil))
-
-return strings.ToUpper(fmt.Sprintf("%x",md5hash.Sum(nil)))
-
- }

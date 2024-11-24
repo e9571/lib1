@@ -82,3 +82,17 @@ func SortPackageStr(data []string,Type int) (string,string){
 func Str_Count(data1,data2 string) int {
 	return 	strings.Count(strings.ToLower(data1), strings.ToLower(data2))
 }
+
+//无差别字符串数组 int 类型对比 第一个是 , 好数组类型 第二个是数字
+func Str_Count_int(data1,data2 string) int {
+
+	list:=Word_Split(data1,",")
+
+	for i:=0;i<len(list);i++ {
+		if Parse_int(list[i])==Parse_int(data2) {
+			return 1
+		}
+	}
+
+	return 0
+}

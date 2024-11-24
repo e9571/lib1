@@ -229,7 +229,8 @@ func ReadBlock(filePath string) string{
 	}
 	defer FileHandle.Close()
     // 设置每次读取字节数
-	buffer := make([]byte, 2048)
+	//buffer := make([]byte, 2048)
+	buffer := make([]byte, 20480)
 	for {
 
 		n, err := FileHandle.Read(buffer)
@@ -245,7 +246,7 @@ func ReadBlock(filePath string) string{
 		//fmt.Println(string(buffer[:n]))
 		note+=string(buffer[:n])
 		count++
-		fmt.Println("ReadBlock",count,len(note))
+		//fmt.Println("ReadBlock",count,len(note))
 	}
 	
 	fmt.Println("readBolck spend : ", time.Now().Sub(start1))
@@ -496,5 +497,8 @@ func Delete_file(path string){
 
 }
 
-
-
+//文件路径标准化
+func Path_standard(path string) string {
+	path = strings.Replace(path, "\\", "/", -1)
+	return path
+}

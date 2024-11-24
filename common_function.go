@@ -203,6 +203,17 @@ func Parse_int8( value string) int8 {
 	return int8(value_tmp)
 }
 
+//2024年8月13日09:50:59 新增数据类型
+func Parse_uint8(value string) uint8 {
+
+	value_tmp,err:=strconv.ParseUint(value, 10, 8)
+
+	if err != nil {
+		return 0
+	}
+
+	return uint8(value_tmp)
+}
 
 //通用 String 转 int64 自动处理异常
 func Parse_int64( value string) int64 {
@@ -570,6 +581,30 @@ if len(value1)>60 &&in_array(intlist_tmp,value1)==false{
 */
 
 func In_array(array_list []string,value string) bool{
+
+	for i := 0; i < len(array_list); i++ {
+
+		if array_list[i]==value{
+			return true
+		}
+	}
+
+	return false
+}
+
+func In_array_int(array_list []int,value int) bool{
+
+	for i := 0; i < len(array_list); i++ {
+
+		if array_list[i]==value{
+			return true
+		}
+	}
+
+	return false
+}
+
+func In_array_int64(array_list []int64,value int64) bool{
 
 	for i := 0; i < len(array_list); i++ {
 
