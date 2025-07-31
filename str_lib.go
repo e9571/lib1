@@ -1,6 +1,8 @@
 package lib1
 
 import (
+	"golang.org/x/crypto/sha3"
+	"math/big"
 	"sort"
 	"strings"
 )
@@ -79,6 +81,7 @@ func SortPackageStr(data []string,Type int) (string,string){
 }
 
 //无差别对比字符串 返回符合数量
+//在1 中搜索 2 出现次数
 func Str_Count(data1,data2 string) int {
 	return 	strings.Count(strings.ToLower(data1), strings.ToLower(data2))
 }
@@ -95,4 +98,49 @@ func Str_Count_int(data1,data2 string) int {
 	}
 
 	return 0
+}
+
+
+/*
+
+    //智能合约 哈希数值函数模拟
+   
+	// 示例用法
+	addr := "0x1234567890abcdef1234567890abcdef12345678" // 模拟以太坊地址
+	typeValue := "abcd"                                     // 任意字符串
+	result := hashAddressNTokenId(addr, typeValue)
+	fmt.Printf("哈希结果 (uint64): %d\n", result)
+
+	// 更多测试用例
+	fmt.Println("测试用例 1:", hashAddressNTokenId(addr, "xyz"))
+	fmt.Println("测试用例 2:", hashAddressNTokenId(addr, "1234"))
+	fmt.Println("测试用例 3:", hashAddressNTokenId("0xabcdefabcdefabcdefabcdefabcdefabcdefabcd", "test"))
+
+
+*/
+
+func HashAddressNTokenId(addr string, typeValue string) uint64 {
+	// 模拟 abi.encodePacked：直接拼接 addr 和 typeValue 的字节
+	data := []byte(addr + typeValue)
+
+	// 使用 Keccak256 哈希
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write(data)
+	hashBytes := hash.Sum(nil)
+
+	// 将前 8 字节转换为 uint64（模拟 Solidity uint）
+	result := new(big.Int).SetBytes(hashBytes[:8]).Uint64()
+
+	return result
+}
+
+//快速编码模式 ASCII 之和 返回值与 HashAddressNTokenId 兼容
+func Str_ascii(str string)  uint64{
+
+	var sum int
+	for _, char := range str {
+		sum += int(char) // 将每个字符的 ASCII 值相加
+	}
+	//fmt.Println("字符 ASCII 值之和:", sum)
+	return uint64(sum)
 }

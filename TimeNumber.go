@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"math/rand"
 )
 
 //版本 1.1
@@ -149,6 +150,10 @@ func Unix_number(time_str string) string {
 //把 unix 时间按转为 指定时间
 func Unix_time(unix_str string) string {
 
+	if len(unix_str)!=10 {
+		return unix_str
+	}
+
 	int_value, _ := strconv.ParseInt(unix_str, 10, 64)
 
 	return time.Unix(int_value, 0).Format("2006-01-02 15:04:05")
@@ -157,14 +162,18 @@ func Unix_time(unix_str string) string {
 
 //新增时间快捷计算函数
 
-//获取币安标准时间
-func Time_standard(unix string) string {
+//获取币安标准时间 返回 unix 还是 time
+func Time_standard(unix string,Type string) string {
 
 	if len(unix)!=13 {
 		return ""
 	}
 
 	unix = unix[0 : len(unix)-3]
+
+	if Type=="unix" {
+		return unix
+	}
 	return  Unix_time(unix)
 }
 
@@ -228,6 +237,79 @@ func Create_time_id(timeStr string) (string,string,string,string){
 	return time_sign,date_day,date_hour,date_minute
 }
 
+
+//Grok3
+// ConvertTimeFormat 将时间字符串从 "20060102150405" 格式转换为 "2006-01-02 15:04:05"
+//时间解码
+func Data_sign_decode(input string) (string) {
+    // 解析输入时间字符串
+    t, err := time.Parse("20060102150405", input)
+    if err != nil {
+    	fmt.Println("invalid time format, expected YYYYMMDDHHMMSS")
+        return ""
+    }
+    
+    // 转换为目标格式
+    return t.Format("2006-01-02 15:04:05")
+}
+
+/*
+	// 示例输入时间字符串
+	inputs := []string{
+		"2006-01-02 15:04:05",
+		"2006/01/02 15:04:05",
+		"2006.01.02 15:04:05",
+		"2006-01-02T15:04:05",
+		"Mon, 02 Jan 2006 15:04:05 MST",
+	}
+
+	// 循环调用 ConvertToCompactTimeFormat 函数
+	for _, input := range inputs {
+		result, err := ConvertToCompactTimeFormat(input)
+		if err != nil {
+			fmt.Printf("Error converting '%s': %v\n", input, err)
+			continue
+		}
+		fmt.Printf("Input: %s -> Output: %s\n", input, result)
+	}
+
+*/
+
+// ConvertToCompactTimeFormat 将任意格式的时间字符串转换为 "20060102150405" 格式
+//时间编码
+func Data_sign_encode(input string) (string) {
+	// 定义常见的时间格式
+	formats := []string{
+		"2006-01-02 15:04:05",
+		"2006/01/02 15:04:05",
+		"2006.01.02 15:04:05",
+		"20060102 15:04:05",
+		"2006-01-02T15:04:05",
+		"2006-01-02",
+		time.RFC3339,
+		time.RFC1123,
+		time.RFC822,
+	}
+
+	var parsedTime time.Time
+	var err error
+
+	// 尝试用每种格式解析输入字符串
+	for _, format := range formats {
+		parsedTime, err = time.Parse(format, input)
+		if err == nil {
+			break
+		}
+	}
+
+	if err != nil {
+		fmt.Println("unable to parse time string with any known format")
+		return ""
+	}
+
+	// 转换为目标格式
+	return parsedTime.Format("20060102150405")
+}
 
 //时间类专用计算
 //获取两个时间的时间差 传入 unix 数据 秒数
@@ -334,4 +416,23 @@ func Get_time_str(value,Type string)  string{
 
     return value
 
+}
+
+// random函数用于生成一个min到max之间的随机整数
+func Random(min, max int) int {
+	return rand.Intn(max-min) + min
+}
+
+//高精度 时序 ID
+func Res_ID(Type string) string {
+
+	//获取毫秒级数据
+	//uuid:=Create_Format_time("msec_str")+fmt.Sprintf("%d", rand.Intn(100000))+Type
+
+	//获取指定范围随机数
+	rand.Seed(time.Now().UnixNano())
+	myrand := Random(10000, 99999)
+
+	//返回指定固定长度的数据
+	return Create_Format_time("msec_str")+fmt.Sprintf("%d", myrand)+Type
 }

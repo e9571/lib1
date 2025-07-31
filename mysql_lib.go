@@ -425,6 +425,12 @@ where=SQL_filter_lib1(where)
 
 }
 
+//生成指定表的搜索语句
+//20250423
+func Sql_create(table_name,where string) string {
+	return "SELECT * FROM " + table_name + " " + where
+}
+
 
 
 //安全格式化工具 去掉数据干扰干扰

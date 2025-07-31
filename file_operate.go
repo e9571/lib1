@@ -69,7 +69,7 @@ func GetFilelist(path string) []string {
 		if f.IsDir() {
 			return nil
 		}
-		println(path)
+		//println(path)
 		path_tmp = append(path_tmp, path)
 		return nil
 	})
@@ -188,6 +188,83 @@ func CopyFile(srcName string, dstName string) (written int64, err error) {
 	defer dst.Close()
 	return io.Copy(dst, src)
 }
+
+//豆包代码
+// copyFile 拷贝单个文件
+func CopyFile1(src, dst string) error {
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer dstFile.Close()
+
+	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return err
+	}
+
+	return dstFile.Sync()
+}
+//豆包代码
+/*
+ srcDir := "source_directory"
+    dstDir := "destination_directory"
+
+    if err := os.MkdirAll(dstDir, 0777); err != nil {
+        panic(err)
+    }
+
+    if err := copyDir(srcDir, dstDir); err != nil {
+        if strings.Contains(err.Error(), "no such file or directory") {
+            panic("源目录不存在，请检查路径。")
+        }
+        panic(err)
+    }
+
+    println("目录拷贝完成")
+}
+ */
+// copyDir 递归拷贝目录
+func CopyDir(src, dst string) error {
+	f, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	entries, err := f.Readdir(-1)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		srcPath := filepath.Join(src, entry.Name())
+		dstPath := filepath.Join(dst, entry.Name())
+
+		if entry.IsDir() {
+			if err := os.MkdirAll(dstPath, 0777); err != nil {
+				return err
+			}
+			if err := CopyDir(srcPath, dstPath); err != nil {
+				return err
+			}
+		} else {
+			if err := CopyFile1(srcPath, dstPath); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+
 
 //读取文件 字节流模式
 func ReadAll_Byte(filePth string) ([]byte, error) {
@@ -501,4 +578,43 @@ func Delete_file(path string){
 func Path_standard(path string) string {
 	path = strings.Replace(path, "\\", "/", -1)
 	return path
+}
+
+/*
+
+  // 指定要删除文件的目录
+    directory := "./testdir"
+    err := deleteFilesInDir(directory)
+    if err != nil {
+        fmt.Printf("删除文件时出错: %v\n", err)
+    } else {
+        fmt.Println("文件删除完成")
+    }
+
+*/
+
+
+//清除临时文件目录
+func Del_tmp()  {
+      DeleteFilesInDir("./tmp")
+}
+
+
+// deleteFilesInDir 递归删除指定目录下的所有文件
+func DeleteFilesInDir(dir string) error {
+    err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+        if err != nil {
+            return err
+        }
+        if!info.IsDir() {
+            // 如果是文件，则删除它
+            err := os.Remove(path)
+            if err != nil {
+                return fmt.Errorf("删除文件 %s 时出错: %w", path, err)
+            }
+            fmt.Printf("已删除文件: %s\n", path)
+        }
+        return nil
+    })
+    return err
 }

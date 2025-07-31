@@ -143,9 +143,13 @@ func Get_HTTP(url_str string) (string,error) {
 }
 
 //超时定制版本
-func Get_HTTP_wait(url_str string,wait int) (string,error) {
+func Get_HTTP_wait(url_str string,wait,show int) (string,error) {
 
-	fmt.Println(Create_Format_time("time"),"open http",url_str,"wait ",wait)
+	if show==1 {
+		fmt.Println(Create_Format_time("time"),"open http",url_str,"wait ",wait)
+	}
+
+
 
 	c := &http.Client{
 		Timeout: time.Second*time.Duration(wait) * time.Second,
@@ -568,8 +572,24 @@ func Sql_filtrate(str string) string{
 	str = strings.Replace(str, "--", "\\--", -1)   //-- 分隔符号
 	str = strings.Replace(str, "\\*", "\\\\*", -1)  //特殊注释符号
 	str = strings.Replace(str, "*/", "\\*/", -1)
+	str = strings.Replace(str, " ", "", -1) // 2024 补丁 数据参数无空格
 
 	return str
+}
+
+//最新版 SQL 注入防御 只获取 字符和数字 来源于 BTC 地址提取
+func Sql_filtrate_str(parameter string) string{
+	data:=""
+	regexp_str := `[A-Za-z\d]+`
+	result:=Get_data_preg(regexp_str,parameter)
+
+	//data=result[0]
+	//数据补丁 2024年2月20日17:08:05
+	for i:=0;i<len(result);i++ {
+		data+=result[i]
+	}
+
+	return data
 }
 
 //遍历数组 判断重复 PHP 函数移植
@@ -605,6 +625,18 @@ func In_array_int(array_list []int,value int) bool{
 }
 
 func In_array_int64(array_list []int64,value int64) bool{
+
+	for i := 0; i < len(array_list); i++ {
+
+		if array_list[i]==value{
+			return true
+		}
+	}
+
+	return false
+}
+
+func In_array_float(array_list []float64,value float64) bool{
 
 	for i := 0; i < len(array_list); i++ {
 
