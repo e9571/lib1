@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"time"
 	"strings"
 )
 
@@ -174,80 +173,6 @@ func Exists(path string) bool {
 		return false
 	}
 	return true
-}
-
-func Log_operate_check() {
-
-	//获取当前路径
-	path := GetCurrentPath()
-	//当前路径操作
-	root := path + "/log"
-	fmt.Println("Log_operate:" + root)
-	//获得路径列表
-	path_list := GetFilelist(root)
-	fmt.Println(root)
-	//fmt.Println(path_list)
-	//进行遍历操作
-	day_area := 7
-	GetFileInfo_list_log(path_list, path, day_area)
-
-}
-
-//遍历 获取时间 同时进行数据检查 Log 日志专用
-func GetFileInfo_list_log(data_source []string, path_source string, day_area int) {
-	for i := 0; i < len(data_source); i++ {
-
-		_, err := os.Stat(data_source[i])
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		//如果大于指定时间 进行文件删除操作
-		Delete_time_area_file(data_source[i], path_source, day_area)
-
-	}
-}
-
-//删除指定时间范围的 文件 重命名模式
-
-func Delete_time_area_file(path_str string, path_source string, day_area int) {
-
-	//打开文件
-	fileinfo, err := os.Stat(path_str)
-	
-	if err != nil {
-
-		fmt.Println(err)
-	}
-
-	file_name := fileinfo.Name()
-
-	t := time.Now()
-
-	// 直接数值类型 格式化后 转int
-
-
-	//获取时间差 进行重命名
-	if TIMESTAMPDIFF(t.Unix(), fileinfo.ModTime().Unix(), "DAY") > day_area {
-
-		//根据规则重命名文件
-		newPath := path_source + "/log/" + "delete_" + file_name
-
-		err := os.Rename(path_str, newPath)
-
-		if err != nil {
-			//如果重命名文件失败,则输出错误 file rename Error!
-			fmt.Println("file rename Error!")
-			//打印错误详细信息
-			fmt.Printf("%s", err)
-
-		} else {
-			//如果文件重命名成功,则输出 file rename OK!
-			fmt.Println("file rename OK!")
-		}
-	}
-
 }
 
 

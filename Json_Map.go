@@ -10,6 +10,25 @@ import (
 //Json to Map and Map to Json 通用转换库 Update 版本
 
 
+//Json 快速打包
+func Json_Package(value interface{})  string {
+
+   send, err := json.Marshal(&value)
+
+   if err!=nil {
+
+    fmt.Println(err)
+
+    return ""
+
+    }
+
+     return string(send)
+}
+
+
+
+
 //高级 JSON 数据兼容转换包
 func Str_To_Json(str string)  map[string]string{
 
@@ -156,4 +175,27 @@ func Str_To_Json_node(str string)  map[string]string{
 	}
 
 	return result
+}
+
+//手动 Json 数据压缩 高精度
+func List_to_Json(list []string) string {
+
+	var str string
+
+	if len(list)==0 {
+		return str
+	}
+
+	str="["
+
+	for i:=0;i<len(list);i++ {
+		str+=list[i]+","
+	}
+
+	str = str[0 : len(str)-1]
+
+	str+="]"
+
+	return str
+
 }

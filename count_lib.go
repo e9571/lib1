@@ -99,7 +99,6 @@ func Count_SQL_Similar(data_time,Type,High,Lower,Open,Close string) string {
 			return "1"
 		}
 
-
 	}
 
 	return "0"
@@ -120,4 +119,27 @@ func DistanceBetweenTwoNumbers(a, b float64) float64 {
 // CalculateDistance 计算两个浮点数之间的绝对距离 Grok3
 func CalculateDistance(float1, float2 float64) float64 {
     return math.Abs(float1 - float2)
+}
+
+//计算两个浮点数的相差是否在指定范围内 Grok
+/*
+示例
+    // Example usage
+	fmt.Println(IsWithinPercentage(100.0, 105.0, 10))  // true (5% diff)
+	fmt.Println(IsWithinPercentage(100.0, 111.0, 10))  // false (11% diff)
+	fmt.Println(IsWithinPercentage(0.0, 0.0, 10))      // true
+	fmt.Println(IsWithinPercentage(50.0, 0.0, 10))     // false (>10%)
+ */
+// IsWithinPercentage checks if the absolute difference between two floats is within a given percentage of the larger value.
+// percent is the percentage threshold (e.g., 10 for 10%).
+func IsWithinPercentage(a, b float64, percent float64) bool {
+	if percent < 0 {
+		return false // Invalid percentage
+	}
+	diff := math.Abs(a - b)
+	maxVal := math.Max(math.Abs(a), math.Abs(b))
+	if maxVal == 0 {
+		return true // Both zero, consider within
+	}
+	return diff <= (percent/100)*maxVal
 }

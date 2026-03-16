@@ -2,11 +2,15 @@ package lib1
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-	"math/rand"
+	"sort"
+	//1.6 版本以上才可用
+	//_ "time/tzdata" // Embed timezone data for portability, especially on Windows
 )
 
 //版本 1.1
@@ -160,6 +164,42 @@ func Unix_time(unix_str string) string {
 
 }
 
+//获取指定时间与当前时间间隔的秒数
+
+func Uinx_interval(timeStr string) float64 {
+
+	location := "Asia/Shanghai"
+
+	timestamp_last, _ := ConvertToUnixTimestamp(timeStr, location)
+
+	timestamp_real, _ := ConvertToUnixTimestamp(Create_Format_time("time"), location)
+
+	//获取绝对值
+	return math.Abs(float64(timestamp_real - timestamp_last))
+}
+
+// ConvertToUnixTimestamp 将时间字符串转换为 Unix 时间戳（秒）
+// 输入格式必须为 "2006-01-02 15:04:05" (YYYY-MM-DD HH:MM:SS)
+// location 为时区，例如 "Asia/Shanghai" 或 "UTC"
+func ConvertToUnixTimestamp(timeStr, location string) (int64, error) {
+	// 加载时区
+	loc, err := time.LoadLocation(location)
+	if err != nil {
+		return 0, err
+	}
+
+	// 使用内置的时间格式解析
+	const layout = "2006-01-02 15:04:05"
+	t, err := time.ParseInLocation(layout, timeStr, loc)
+	if err != nil {
+		return 0, err
+	}
+
+	// 返回 Unix 时间戳（秒）
+	return t.Unix(), nil
+}
+
+
 //新增时间快捷计算函数
 
 //获取币安标准时间 返回 unix 还是 time
@@ -194,17 +234,12 @@ func Week_day(timeStr string)string  {
 	return strconv.Itoa(Week)
 }
 
-//获取指定日期偏移时间 高精度自定义 与 主时间函数 Create_Format_time 兼容
-func Day_add(timeStr string,place int)  string{
-	layout := "2006-01-02 15:04:05" //常规时间标志位
-	utcTime, _ := time.Parse(layout, timeStr)
-	getTime := utcTime.AddDate(0, 0, place)                //年，月，日   获取一天前的时间
-	resTime := getTime.Format("2006-01-02 15:04:05") //获取的时间的格式
-	//fmt.Println(resTime)
-	return resTime
-}
+
 
 //生成高精度 group_id 秒级
+//天级数据 Group_id_sec("")[0:8]
+//小时级数据 Group_id_sec("")[0 :10]
+//分钟级数据 lib1.Group_id_sec("")[ :12 ]
 func Group_id_sec(symbol string) string{
 	group_id:=Create_Format_time("time")
 	group_id=strings.Replace(group_id, " ", "", -1)
@@ -311,50 +346,7 @@ func Data_sign_encode(input string) (string) {
 	return parsedTime.Format("20060102150405")
 }
 
-//时间类专用计算
-//获取两个时间的时间差 传入 unix 数据 秒数
-//SECOND
-//MINUTE
-//HOUR
-//DAY 最多只到天，因为跨月的话 ，会涉及到的月度日期的不一致问题
-func TIMESTAMPDIFF(datetime_expr_start int64, datetime_expr_complete int64, type_str string) int {
 
-	//进行数据转换
-	//v1, err := strconv.ParseFloat(datetime_expr1, 64)
-	//v2, err := strconv.ParseFloat(datetime_expr2, 64)
-	//value := math.Abs(v1 - v2)
-	value := datetime_expr_start - datetime_expr_complete
-
-	//进行数据转换 如果需要整除
-	value_str := strconv.FormatInt(value, 10)
-	value_float, _ := strconv.ParseFloat(value_str, 64)
-
-	value_return := 1001
-
-	switch type_str {
-	case "SECOND":
-		//string := strconv.FormatInt(int64, value_tmp)
-		value_tmp := strconv.FormatInt(value, 16)
-		//value, _ = strconv.Atoi(value_tmp)
-		value_return, _ = strconv.Atoi(value_tmp)
-		return value_return
-	case "MINUTE":
-		value_float = value_float / 60
-	case "HOUR":
-		value_float = value_float / 60 / 60
-	case "DAY":
-		value_float = value_float / 60 / 60 / 24
-	}
-
-	//对数据进行格式化过滤
-	value_tmp := fmt.Sprintf("%0.0f", value_float)
-
-	//重新对数据进行赋值
-	value_return, _ = strconv.Atoi(value_tmp)
-
-	return value_return
-
-}
 
 //获取时间戳中的指定标志位
 // y m d h i s
@@ -418,21 +410,392 @@ func Get_time_str(value,Type string)  string{
 
 }
 
+//随机数函数
+
+//快速随机数 普通生成
 // random函数用于生成一个min到max之间的随机整数
 func Random(min, max int) int {
 	return rand.Intn(max-min) + min
 }
 
+//专业随机数 纳秒生成
+// GenerateRandomNumber 生成指定范围内的随机整数
+// 参数:
+// - min: 范围最小值 (包含)
+// - max: 范围最大值 (包含)
+// 返回: 随机整数和可能的错误
+func GenerateRandomNumber(min, max int) (int, error) {
+	// 验证输入参数
+	if min > max {
+		return 0, fmt.Errorf("最小值 %d 不能大于最大值 %d", min, max)
+	}
+
+	// 使用当前纳秒时间戳作为随机数种子
+	rand.Seed(time.Now().UnixNano())
+
+	// 生成 [min, max] 范围内的随机数
+	// rand.Intn(n) 生成 [0, n-1] 的随机数，因此调整为 [min, max]
+	return min + rand.Intn(max-min+1), nil
+}
+
 //高精度 时序 ID
 func Res_ID(Type string) string {
 
-	//获取毫秒级数据
-	//uuid:=Create_Format_time("msec_str")+fmt.Sprintf("%d", rand.Intn(100000))+Type
-
-	//获取指定范围随机数
-	rand.Seed(time.Now().UnixNano())
 	myrand := Random(10000, 99999)
 
 	//返回指定固定长度的数据
 	return Create_Format_time("msec_str")+fmt.Sprintf("%d", myrand)+Type
+}
+
+// 支持的常见时间格式列表
+var supportedFormats = []string{
+	"2006-01-02 15:04:05",       // 标准格式：2026-01-07 11:00:00
+	"2006/01/02 15:04:05",       // 斜杠分隔：2026/01/07 11:00:00
+	"2006.01.02 15:04:05",       // 点分隔：2026.01.07 11:00:00
+	"20060102150405",           // 紧凑无分隔符：20260107110000
+	"2006-01-02T15:04:05",       // ISO 带 T：2026-01-07T11:00:00
+	"2006-01-02",               // 仅日期：2026-01-07
+	time.RFC3339,               // 2026-01-07T11:00:00Z07:00
+	time.RFC3339Nano,           // 带纳秒：2026-01-07T11:00:00.123456789Z
+	time.RFC1123,               // Wed, 07 Jan 2026 11:00:00 MST
+	time.RFC1123Z,              // Wed, 07 Jan 2026 11:00:00 +0800
+	time.RFC822,                // 07 Jan 26 11:00 MST
+	time.RFC822Z,               // 07 Jan 26 11:00 +0800
+	"2006-01-02 15:04:05.000",  // 带毫秒
+	"2006-01-02T15:04:05Z",     // UTC 时间
+	"2006-01-02T15:04:05-07:00",// 带时区偏移
+}
+
+//高精度时间判断
+
+/*
+
+//判断目标时间是否大于当前时间制定分钟
+
+		if lib1.IsBeforeMinutes(handle.Data[i].Data_time,3)==false {
+			continue
+		}
+
+*/
+
+// IsKlineOutdated 判断 Kline 时间是否已经超过当前时间指定分钟数
+// 用于检测数据是否太旧（例如：最新 K 线时间距离现在 > 3 分钟 → 认为已过期）
+//
+// 参数:
+//   timeStr - Kline 的时间字符串（一定是过去的时间）
+//   minutes - 过期阈值（例如 3 分钟）
+//
+// 返回:
+//   true  - 已经超过指定分钟（数据太旧，需要更新）
+//   false - 还在阈值内（数据较新鲜）
+func IsKlineOutdated(timeStr string, minutes int) bool {
+	var parsedTime time.Time
+	var err error
+
+	// 关键修改：使用 time.Local 时区解析
+	location := time.Local
+
+	for _, layout := range supportedFormats {
+		parsedTime, err = time.ParseInLocation(layout, timeStr, location)
+		if err == nil {
+			break
+		}
+	}
+
+	if err != nil {
+		fmt.Printf("时间解析失败: %s (错误: %v)，视为已过期\n", timeStr, err)
+		return true // 解析失败，保守策略：认为已过期
+	}
+
+	now := time.Now()
+
+	elapsed := now.Sub(parsedTime)
+
+	// 可选：打印调试信息（上线前可删除）
+	// fmt.Printf("Kline时间: %v | 当前时间: %v | 过去了: %v\n", parsedTime, now, elapsed)
+
+	return elapsed > time.Duration(minutes)*time.Minute
+}
+
+// FormatToYMDHM 将任意支持的时间字符串格式化为 "YYYYMMDDHHMM" 格式
+// 示例：2026-01-07 11:05:30 → "202601071105"
+//
+// 参数:
+//   timeStr - 任意常见格式的时间字符串
+//
+// 返回:
+//   string - 格式化后的 "年月日时分" 字符串（长度固定为12位）
+//   bool   - 是否解析成功（失败返回 false 和空字符串）
+func FormatToYMDHM(timeStr string) (string, bool) {
+	var parsedTime time.Time
+	var err error
+
+	// 依次尝试所有支持的格式进行解析
+	for _, layout := range supportedFormats {
+		parsedTime, err = time.Parse(layout, timeStr)
+		if err == nil {
+			break
+		}
+	}
+
+	if err != nil {
+		// 如果所有格式都解析失败
+		return "", false
+	}
+
+	// 使用固定布局格式化：年(4位) 月(2位) 日(2位) 时(2位) 分(2位)
+	// 200601021504 → YYYYMMDDHHMM
+	formatted := parsedTime.Format("200601021504")
+
+	return formatted, true
+}
+
+//高精度提取日期格式 全自动匹配符合日期的格式
+
+// DateStrToYYYYSlashMMDD 把日期字符串转为 2025/12/19 格式
+// 规则：直接取字符串的前8位作为 YYYYMMDD 进行解析
+// 支持：20251219、20251219000、202512190000、20251219000000 等
+// 失败条件：前8位不是有效日期，或者长度小于8位
+func DateStrToYYYYSlashMMDD(s string) (string, bool) {
+    s = strings.TrimSpace(s)
+    
+    // 长度不够8位，直接失败
+    if len(s) < 8 {
+        return "", false
+    }
+    
+    // 只取前8位
+    datePart := s[:8]
+    
+    t, err := time.Parse("20060102", datePart)
+    if err != nil {
+        return "", false
+    }
+    
+    return t.Format("2006/01/02"), true
+}
+
+// 提取 时间字段进行去重 YYYYMMDD
+// 更保守一点的写法（如果非常在意内存分配次数）
+func ExtractUniqueSortedDatesConservative(dates []string) []string {
+	seen := make(map[string]bool)
+
+	for _, s := range dates {
+		if len(s) >= 8 {
+			seen[s[:8]] = true
+		}
+	}
+
+	result := make([]string, 0, len(seen))
+	for day := range seen {
+		result = append(result, day)
+	}
+
+	sort.Strings(result)
+	return result
+}
+
+// GetMondayDates 过滤出列表中是星期一的日期（格式 YYYYMMDD）
+func GetMondayDates(dates []string) []string {
+	var mondays []string
+
+	for _, dateStr := range dates {
+		if len(dateStr) != 8 {
+			continue // 格式不对就跳过
+		}
+
+		// 解析 YYYYMMDD 格式
+		t, err := time.Parse("20060102", dateStr)
+		if err != nil {
+			continue // 解析失败就跳过
+		}
+
+		// time.Weekday()：0=Sunday, 1=Monday, ..., 6=Saturday
+		if t.Weekday() == time.Monday {
+			mondays = append(mondays, dateStr)
+		}
+	}
+
+	return mondays
+}
+
+
+//获取整点秒数
+//lib1.SecondsToNextHour(lib1.Create_Format_time("time"))
+// SecondsToNextHour 計算距離下一個整點還有多少秒
+//   - 無參數 → 使用當前時間
+//   - 有參數 → 嘗試解析該時間字串
+// 回傳值：永遠只回傳 int (秒數)，錯誤或提示會印在 stdout
+func SecondsToNextHour(timeStr ...string) int {
+	var now time.Time
+
+	if len(timeStr) == 0 {
+		now = time.Now()
+	} else {
+		input := strings.TrimSpace(timeStr[0])
+		if input == "" {
+			now = time.Now()
+		} else {
+			var parsed bool
+			for _, layout := range supportedFormats {
+				t, err := time.ParseInLocation(layout, input, time.Local)
+				if err == nil {
+					now = t
+					parsed = true
+					break
+				}
+			}
+			if !parsed {
+				fmt.Printf("錯誤：無法解析時間字串 %q\n", input)
+				fmt.Println("  支援的格式範例：")
+				fmt.Println("    2026-01-19 15:20:30")
+				fmt.Println("    20260119152030")
+				fmt.Println("    2026-01-19T15:20:30+08:00")
+				fmt.Println("使用當前時間作為 fallback")
+				now = time.Now()
+			}
+		}
+	}
+
+	// 核心計算
+	_, min, sec := now.Clock()
+	secondsPast := min*60 + sec
+	secondsLeft := 3600 - secondsPast
+
+	// 只在函數內印出資訊（供除錯或觀察用）
+	fmt.Printf("[debug] 基準時間: %s\n", now.Format("2006-01-02 15:04:05"))
+	fmt.Printf("[debug] 距離下一個整點: %d 秒\n", secondsLeft)
+
+	return secondsLeft
+}
+
+// IsTimeInRange 判断 target 是否在 start ~ end 范围内（包含边界）
+// 所有参数都必须是 14 位数字字符串：yyyymdhhiiss
+// 示例：20250315143022 → 2025-03-15 14:30:22
+func IsTimeInRange(target, start, end string) (bool, error) {
+	const layout = "20060102150405"
+
+	// 长度校验（最简单但很有效的防御）
+	if len(target) != 14 || len(start) != 14 || len(end) != 14 {
+		return false, fmt.Errorf("时间字符串必须是14位数字，实际长度: target=%d, start=%d, end=%d",
+			len(target), len(start), len(end))
+	}
+
+	t, err := time.Parse(layout, target)
+	if err != nil {
+		return false, fmt.Errorf("目标时间格式错误: %s (%v)", target, err)
+	}
+
+	s, err := time.Parse(layout, start)
+	if err != nil {
+		return false, fmt.Errorf("开始时间格式错误: %s (%v)", start, err)
+	}
+
+	e, err := time.Parse(layout, end)
+	if err != nil {
+		return false, fmt.Errorf("结束时间格式错误: %s (%v)", end, err)
+	}
+
+	// start <= target <= end
+	return !t.Before(s) && !t.After(e), nil
+}
+
+//判断是否是周末
+// IsWeekend 检查传入的 "2006-01-02 15:04:05" 格式时间字符串（支持单/双位数字）对应的本地日期是否为周末
+// 返回：(是否周末, 错误信息)
+// 核心特性：
+//   ✅ 使用 ParseInLocation + time.Local：将字符串直接解释为系统本地时间（非 UTC 转换）
+//   ✅ 布局字符串 "2006-1-2 15:04:05"：完美兼容单/双位月、日、时、分、秒
+//   ✅ 明确错误提示：包含无效格式示例
+func IsWeekend(datetimeStr string) (bool, error) {
+	layout := "2006-1-2 15:04:05" // Go 参考时间布局：1/2 表示月/日支持单双位，15 表示 24 小时制
+
+	// 关键：使用 ParseInLocation 将字符串直接解析为系统本地时区的时间
+	// 避免先解析为 UTC 再转换导致的日期偏移（例如：UTC 23:00 可能已是本地次日）
+	t, err := time.ParseInLocation(layout, datetimeStr, time.Local)
+	if err != nil {
+		return false, fmt.Errorf(
+			"时间解析失败（格式应为: yyyy-m-d hh:mm:ss，例如 2026-2-19 10:29:30 或 2026-02-19 10:29:30）: %w",
+			err,
+		)
+	}
+
+	// 检查星期（此时 t 已是本地时区，无需额外转换）
+	weekday := t.Weekday()
+	return weekday == time.Saturday || weekday == time.Sunday, nil
+}
+
+
+//高精度时间排序格式化
+
+// TimeFormat 定义支持的时间格式及其是否包含时间部分
+type TimeFormat struct {
+	Pattern    string // 解析用的格式
+	HasTime    bool   // 是否包含时分秒
+	OutputFmt  string // 输出用的格式（用于 Format）
+}
+
+var supportedFormats_v2 = []TimeFormat{
+	{"2006-01-02 15:04:05", true, "20060102150405"},
+	{"2006/01/02 15:04:05", true, "20060102150405"},
+	{"2006.01.02 15:04:05", true, "20060102150405"},
+	{"20060102150405", true, "20060102150405"},
+	{"2006-01-02T15:04:05", true, "20060102150405"},
+	{time.RFC3339, true, "20060102150405"},
+	{time.RFC3339Nano, true, "20060102150405"},
+	{time.RFC1123, true, "20060102150405"},
+	{time.RFC1123Z, true, "20060102150405"},
+	{time.RFC822, true, "20060102150405"},
+	{time.RFC822Z, true, "20060102150405"},
+	{"2006-01-02 15:04:05.000", true, "20060102150405"},
+	{"2006-01-02T15:04:05Z", true, "20060102150405"},
+	{"2006-01-02T15:04:05-07:00", true, "20060102150405"},
+	{"2006-01-02", false, "20060102"}, // 仅日期
+}
+
+type TimeSlice []time.Time
+
+func (t TimeSlice) Len() int           { return len(t) }
+func (t TimeSlice) Less(i, j int) bool { return t[i].Before(t[j]) }
+func (t TimeSlice) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
+
+// FormatDateList 升级版：根据输入格式类型决定输出格式 排序输出
+func FormatDateList(dateStrs []string) ([]string, error) {
+	if len(dateStrs) == 0 {
+		return []string{}, nil
+	}
+
+	// 尝试匹配格式 高精度时序 v2 版本
+	var detected *TimeFormat
+	for _, tf := range supportedFormats_v2 {
+		if _, err := time.Parse(tf.Pattern, dateStrs[0]); err == nil {
+			detected = &tf
+			break
+		}
+	}
+
+	if detected == nil {
+		return nil, fmt.Errorf("first date '%s' does not match any supported format", dateStrs[0])
+	}
+
+	// 验证所有字符串都符合该格式
+	times := make([]time.Time, len(dateStrs))
+	for i, s := range dateStrs {
+		t, err := time.Parse(detected.Pattern, s)
+		if err != nil {
+			return nil, fmt.Errorf("'%s' doesn't match format '%s': %v", s, detected.Pattern, err)
+		}
+		times[i] = t
+	}
+
+	// 排序（Go 1.5 兼容）
+	sort.Sort(TimeSlice(times))
+
+	// 按 detected.OutputFmt 格式化输出
+	result := make([]string, len(times))
+	for i, t := range times {
+		result[i] = t.Format(detected.OutputFmt)
+	}
+
+	return result, nil
 }

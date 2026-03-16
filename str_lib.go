@@ -1,10 +1,14 @@
 package lib1
 
 import (
+    "crypto/sha1"
 	"golang.org/x/crypto/sha3"
 	"math/big"
 	"sort"
 	"strings"
+	"crypto/sha1"
+	"encoding/hex"
+	"time"
 )
 
 //字符串处理专用函数 处理复杂字符串需求
@@ -143,4 +147,85 @@ func Str_ascii(str string)  uint64{
 	}
 	//fmt.Println("字符 ASCII 值之和:", sum)
 	return uint64(sum)
+}
+
+
+// StringToEthAddressWithControl
+// input: 任意字符串
+// useNano: 0 = 固定输出（每次相同），非0 = 加入纳秒时间戳（每次不同）
+// 返回: 0x + 40位十六进制小写地址
+/*
+func StringToEthAddressWithControl(input string, useNano int) string {
+	// 1. 基础输入
+	data := []byte(input)
+
+	// 2. 如果 useNano != 0，加入纳秒时间戳（确保每次不同）
+	if useNano != 0 {
+		nano := time.Now().UnixNano()
+		// 将纳秒转为字节追加
+		timeBytes := make([]byte, 8)
+		for i := 0; i < 8; i++ {
+			timeBytes[i] = byte(nano >> (uint(i) * 8))
+		}
+		data = append(data, timeBytes...)
+	}
+
+	// 3. 计算 SHA1
+	hasher := sha1.New()
+	hasher.Write(data)
+	hash := hasher.Sum(nil)
+
+	// 4. 取前 20 字节
+	addrBytes := hash[:20]
+
+	// 5. 转为十六进制小写
+	hexStr := hex.EncodeToString(addrBytes)
+
+	// 6. 补齐到 40 位
+	hexStr = strings.Repeat("0", 40-len(hexStr)) + hexStr
+
+	// 7. 返回 0x 前缀
+	return "0x" + hexStr
+}
+*/
+
+// StringToEthAddressWithControl
+// input: 任意字符串
+// useNano: 0 = 固定输出（每次相同），非0 = 加入纳秒时间戳（每次不同）
+// 返回: 0x + 40位十六进制小写地址，或空字符串（如果输入无效）
+func StringToEthAddressWithControl(input string, useNano int) string {
+	if input == "" {
+		return "" // 空输入返回空字符串（避免无效地址）
+	}
+
+	// 1. 基础输入
+	data := []byte(input)
+
+	// 2. 如果 useNano != 0，加入纳秒时间戳（确保每次不同）
+	if useNano != 0 {
+		nano := time.Now().UnixNano()
+		// 将纳秒转为字节追加 (little-endian)
+		timeBytes := make([]byte, 8)
+		for i := 0; i < 8; i++ {
+			timeBytes[i] = byte(nano >> (uint(i) * 8))
+		}
+		data = append(data, timeBytes...)
+	}
+
+	// 3. 计算 SHA1
+	hasher := sha1.New()
+	hasher.Write(data)
+	hash := hasher.Sum(nil)
+
+	// 4. 取前 20 字节
+	addrBytes := hash[:20]
+
+	// 5. 转为十六进制小写
+	hexStr := hex.EncodeToString(addrBytes)
+
+	// 6. 补齐到 40 位（如果需要，虽然 SHA1 固定 20 字节 -> 40 hex）
+	hexStr = strings.Repeat("0", 40-len(hexStr)) + hexStr
+
+	// 7. 返回 0x 前缀
+	return "0x" + hexStr
 }

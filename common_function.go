@@ -17,7 +17,6 @@ import (
 	"strings"
 	"time"
 	"path/filepath"
-	"encoding/json"
 )
 
 //专业函数工具类
@@ -232,7 +231,7 @@ func Parse_int64( value string) int64 {
 }
 
 //通用 String 转 int64 自动处理异常
-func Parse_uint64( value string) uint64 {
+func Parse_uint64(value string) uint64 {
 
 	int64, err := strconv.ParseUint(value, 10, 64)
 
@@ -460,7 +459,6 @@ func Printf(str string) {
 
 
 //排序 Map 防止不不稳定的情况出现
-
 func Taxis_map(m map[string]string) []string {
 
 	sorted_keys := make([]string, 0)
@@ -727,43 +725,6 @@ func Create_path_os()  (string,error){
 	return exPath+"",err
 }
 
-//Json 快速打包
-func Json_Package(value interface{})  string {
 
-   send, err := json.Marshal(&value)
-
-   if err!=nil {
-
-    fmt.Println(err)
-
-    return ""
-
-    }
-
-     return string(send)
-}
-
-//手动 Json 数据压缩 高精度
-func List_to_Json(list []string) string {
-
-	var str string
-
-	if len(list)==0 {
-		return str
-	}
-
-	str="["
-
-	for i:=0;i<len(list);i++ {
-		str+=list[i]+","
-	}
-
-	str = str[0 : len(str)-1]
-
-	str+="]"
-
-	return str
-
-}
 
 
